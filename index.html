@@ -120,6 +120,16 @@
     .h2 { font-size: clamp(2rem, 5vw, 3.25rem); }
     .lead { font-size: clamp(1.05rem, 2.2vw, 1.35rem); }
 
+    /* --- Highlight Headline Tambahan --- */
+    .highlight-brand {
+      background-color: #E3EBF5; 
+      color: var(--light-text);
+      padding: 4px 16px;
+      border-radius: 8px;
+      display: inline-block;
+      margin-top: 6px; /* Memberi sedikit jarak jika teks turun baris */
+    }
+
     /* --- Tombol --- */
     .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; font-weight: 600; padding: .95rem 1.6rem; border: 2px solid transparent; border-radius: var(--radius-btn); transition: transform .12s ease, background-color .12s ease, opacity .12s ease; }
     .btn:hover { transform: translateY(-1px); }
@@ -232,7 +242,12 @@
     <section class="sec-cream">
       <div class="wrap pad center reveal">
         <span class="pre-headline">Gaji UMR Bukan Alasan Kere!</span>
-        <h1 class="h1 narrow">Stop Gaji Numpang Lewat: Keluar dari Jebakan PayLater</h1>
+        
+        <!-- REVISI HEADLINE DI SINI -->
+        <h1 class="h1 narrow">
+          Stop Gaji Numpang Lewat:<br>Keluar dari <span class="highlight-brand">Jebakan PayLater</span>
+        </h1>
+        
         <p class="lead muted narrow mt-6">Jangan biarkan hasil keringat Anda habis hanya untuk membayar utang dan gaya hidup semu. Ambil alih kendali keuangan Anda hari ini juga!</p>
         
         <div class="mt-8">
