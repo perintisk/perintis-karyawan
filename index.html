@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stop Gaji Numpang Lewat - Perintis Karyawan</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Internal -->
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #1a1a1a;
+            --text-muted: #4a4a4a;
+            --btn-color: #0056b3;
+            --btn-hover: #004494;
+            --accent-color: #f0f7ff;
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        section {
+            padding: 80px 0;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 16px;
+        }
+
+        p {
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+        }
+
+        /* Buttons */
+        .btn-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--btn-color);
+            color: #ffffff;
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 20px 40px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0, 86, 179, 0.3);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: var(--btn-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 86, 179, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 100px 0 60px;
+        }
+
+        .pre-headline {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: var(--btn-color);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 24px;
+        }
+
+        .hero p.sub-headline {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Description Section */
+        .description {
+            background-color: #fafafa;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 80px;
+            font-size: 1.15rem;
+            font-weight: 500;
+        }
+
+        /* Features Section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #eaeaea;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-right: 20px;
+            line-height: 1;
+        }
+
+        .feature-text h3 {
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+            color: var(--btn-color);
+        }
+
+        .feature-text p {
+            margin-bottom: 0;
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            background-color: var(--accent-color);
+            padding: 80px 0;
+        }
+
+        .testimonials-title {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 48px;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        .testimonial-card {
+            background: #ffffff;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .stars {
+            color: #FFB800;
+            margin-bottom: 16px;
+            font-size: 1.2rem;
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 24px;
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            font-family: var(--font-heading);
+            color: var(--btn-color);
+        }
+
+        /* Offer Section */
+        .offer {
+            text-align: center;
+            padding: 80px 0;
+        }
+        
+        .offer-box {
+            border: 2px dashed var(--btn-color);
+            padding: 40px;
+            border-radius: 16px;
+            background-color: #ffffff;
+        }
+
+        .offer h2 {
+            font-size: 2.2rem;
+        }
+
+        .offer p {
+            font-size: 1.2rem;
+            margin-top: 16px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #111111;
+            color: #ffffff;
+            padding: 60px 0 30px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .footer-brand {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #ffffff;
+        }
+
+        .footer-info p {
+            margin-bottom: 8px;
+            color: #aaaaaa;
+            font-size: 0.95rem;
+        }
+
+        .footer-social {
+            margin: 24px 0;
+            color: #aaaaaa;
+        }
+
+        .copyright {
+            margin-top: 40px;
+            color: #666666;
+            border-top: 1px solid #333333;
+            padding-top: 24px;
+        }
+
+        /* Responsive Design */
+        @media (min-width: 768px) {
+            .features-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .testimonials-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <header class="hero container">
+        <span class="pre-headline">Gaji UMR Bukan Alasan Kere!</span>
+        <h1>Stop Gaji Numpang Lewat: Panduan Memotong Kebocoran Finansial & Keluar dari Jebakan PayLater.</h1>
+        <p class="sub-headline">Jangan biarkan hasil keringat Anda habis hanya untuk membayar utang dan gaya hidup semu. Ambil alih kendali keuangan Anda hari ini juga!</p>
+    </header>
+
+    <main>
+        <div class="container">
+            <!-- Description Section -->
+            <div class="description">
+                <p>"Tanggal gajian seharusnya membahagiakan, bukan menjadi awal stres baru. Ebook ini adalah panduan langkah demi langkah untuk Anda yang lelah bekerja keras namun uang selalu kritis di akhir bulan. Anda akan belajar bahwa masalahnya bukan pada seberapa besar gaji Anda, melainkan bagaimana cara Anda mengelolanya."</p>
+            </div>
+
+            <!-- Features and Value Section -->
+            <section class="features" style="padding-top: 0;">
+                <h2 style="text-align: center; font-size: 2.2rem;">Apa yang Akan Anda Dapatkan?</h2>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">✂️</div>
+                        <div class="feature-text">
+                            <h3>Track & Slash</h3>
+                            <p>Kuasai uang Anda dengan mencatat dan memangkas pengeluaran terselubung secara drastis.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🛡️</div>
+                        <div class="feature-text">
+                            <h3>Anti Utang Konsumtif</h3>
+                            <p>Strategi praktis menjauhi wabah PayLater dan kredit yang menghancurkan masa depan.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">💰</div>
+                        <div class="feature-text">
+                            <h3>Nabung Jalur Receh</h3>
+                            <p>Rahasia membangun fondasi kekayaan dan perisai krisis hanya dengan menyisihkan uang mulai dari Rp 20.000 di awal bulan.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">⚡</div>
+                        <div class="feature-text">
+                            <h3>Rencana Aksi 24 Jam</h3>
+                            <p>Jangan sekadar teori! Dapatkan instruksi konkret dari audit cepat hingga aksi menabung pertama yang bisa langsung Anda eksekusi hari ini.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Call to Action 1 -->
+                <div class="btn-container">
+                    <a href="#" class="btn">PESAN SEKARANG - GRATIS!</a>
+                </div>
+            </section>
+        </div>
+
+        <!-- Testimonial Section -->
+        <section class="testimonials">
+            <div class="container">
+                <h2 class="testimonials-title">Apa Kata Mereka?</h2>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="stars">★★★★★</div>
+                        <p class="testimonial-text">"Dulu tiap tanggal 15 selalu bingung cari pinjaman untuk nutup kebutuhan. Setelah baca panduan ini dan praktek Rencana Aksi 24 Jam, sekarang saya bahkan bisa menyisihkan dana darurat di awal bulan!"</p>
+                        <p class="testimonial-author">- Budi S., Karyawan Swasta</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="stars">★★★★★</div>
+                        <p class="testimonial-text">"Saya sadar ternyata banyak banget pengeluaran ga penting yang bikin gaji UMR saya selalu boncos. Trik 'Nabung Jalur Receh' benar-benar mengubah mindset saya soal uang. Highly recommended!"</p>
+                        <p class="testimonial-author">- Rina F., Staff Administrasi</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Offer Section -->
+        <section class="offer container">
+            <div class="offer-box">
+                <h2>Penawaran Khusus</h2>
+                <p>Dapatkan <strong>Rencana Aksi 24 Jam</strong> ini secara <strong>GRATIS!</strong> Ubah kondisi kritis Anda menjadi mandiri finansial hanya dengan uang receh. Penawaran ini terbatas.</p>
+                
+                <!-- Call to Action 2 -->
+                <div class="btn-container" style="margin-top: 30px;">
+                    <a href="#" class="btn">AMBIL EBOOK GRATIS SAYA SEKARANG</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-brand">Perintis Karyawan</div>
+            <div class="footer-info">
+                <p>Garut - Indonesia</p>
+                <p>WhatsApp: 083866939093</p>
+            </div>
+            <div class="footer-social">
+                <p>Instagram: @perintiskaryawan | TikTok: @perintiskaryawan | YouTube: @PerintisKaryawan</p>
+            </div>
+            <div class="copyright">
+                &copy; 2026 Perintis Karyawan. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
