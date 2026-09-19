@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profit Prompt Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans">
+
+  <!-- Header -->
+  <header class="bg-slate-800 border-b border-slate-700 px-6 py-4 flex justify-between items-center sticky top-0 z-50">
+    <div class="flex items-center space-x-3">
+      <div class="bg-indigo-600 p-2 rounded-lg text-white font-bold">PPH</div>
+      <h1 class="text-xl font-bold tracking-wide">Profit Prompt Hub</h1>
+    </div>
+    <div class="relative w-72">
+      <input type="text" id="searchInput" oninput="filterPrompts()" placeholder="Cari prompt atau materi..." class="w-full bg-slate-900 text-sm rounded-lg pl-9 pr-4 py-2 border border-slate-700 focus:outline-none focus:border-indigo-500">
+      <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-xs text-slate-500"></i>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
+    <!-- Sidebar / Phase Navigation -->
+    <nav class="w-full md:w-64 bg-slate-800/50 border-r border-slate-700 p-4 space-y-2">
+      <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-3 mb-2">Navigasi Fase</p>
+      <button onclick="selectPhase('fase1')" id="tab-fase1" class="phase-btn w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-700 transition flex items-center space-x-3 bg-indigo-600/20 text-indigo-400 border border-indigo-500/30">
+        <i class="fa-solid fa-box-archive w-5"></i><span>Fase 1: Produk</span>
+      </button>
+      <button onclick="selectPhase('fase2')" id="tab-fase2" class="phase-btn w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-700 transition flex items-center space-x-3 text-slate-300">
+        <i class="fa-solid fa-video w-5"></i><span>Fase 2: Konten</span>
+      </button>
+      <button onclick="selectPhase('fase3')" id="tab-fase3" class="phase-btn w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-700 transition flex items-center space-x-3 text-slate-300">
+        <i class="fa-solid fa-share-nodes w-5"></i><span>Fase 3: Distribusi</span>
+      </button>
+      <button onclick="selectPhase('fase4')" id="tab-fase4" class="phase-btn w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-700 transition flex items-center space-x-3 text-slate-300">
+        <i class="fa-solid fa-comments-dollar w-5"></i><span>Fase 4: Konversi</span>
+      </button>
+    </nav>
+
+    <!-- Content Workspace -->
+    <main class="flex-1 overflow-y-auto p-6 space-y-6">
+      <div id="phaseTitleContainer" class="border-b border-slate-800 pb-4">
+        <h2 id="phaseTitle" class="text-2xl font-bold text-white">Fase 1: Produksi Produk</h2>
+        <p id="phaseDesc" class="text-sm text-slate-400 mt-1">Modul riset, outline e-book, hingga perancangan desain cover visual.</p>
+      </div>
+
+      <!-- Prompt Cards Grid -->
+      <div id="promptGrid" class="grid grid-cols-1 gap-6">
+        <!-- Dynamic Cards Inserted Here via JS -->
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const database = {
+      fase1: {
+        title: "Fase 1: Produksi Produk",
+        desc: "Panduan dan prompt riset pasar, penyusunan outline, penulisan e-book, serta pengerjaan aset produk digital.",
+        prompts: [
+          {
+            id: "p1_1",
+            title: "Riset Niche & Value Proposition E-Book",
+            video: "https://youtu.be/sample1",
+            template: "Bertindaklah sebagai Produk Strategist E-book. Analisis topik [TOPIK_EBOOK] untuk target audiens [TARGET_AUDIENS]. Buatkan 3 pilihan Angle Judul yang paling menjual dan Value Proposition utama."
+          }
+        ]
+      },
+      fase2: {
+        title: "Fase 2: Produksi Konten",
+        desc: "Prompt penyusunan personal branding, ide konten massal, pembuatan hook viral, hingga pembuatan arahan footage faceless video.",
+        prompts: [
+          {
+            id: "p2_1",
+            title: "Hook Generator (Scroll-Stopping)",
+            video: "https://youtu.be/sample2",
+            template: "Bertindaklah sebagai Short-Form Content Copywriter. Buatkan 5 variasi Hook video durasi 1 menit tentang [TOPIK] untuk platform [PLATFORM] dengan pendekatan [GAYA_BAHASA]."
+          }
+        ]
+      },
+      fase3: {
+        title: "Fase 3: Distribusi",
+        desc: "Kumpulan prompt caption, hashtags, interaksi kompetitor, Threads thread, serta ekosistem materi 30 hari.",
+        prompts: [
+          {
+            id: "p3_1",
+            title: "BiB #26 - Caption & Hashtag Relevan",
+            video: "https://youtu.be/u24LEQ_44i0?si=jJB_sNdbZ-zSk4RB",
+            template: "Tolong analisis video yang saya unggah ini dan buatkan caption serta hashtag yang paling relevan untuk diposting di media sosial.\n\nAturan:\n1. 3 opsi caption menarik.\n2. 3 hashtag relevan di akhir.\n3. Tampilkan hasil langsung tanpa kalimat pembuka/penutup."
+          },
+          {
+            id: "p3_2",
+            title: "BiB #27 - Utas (Thread) Threads / X",
+            video: "https://youtu.be/0eqCuIwRTjY?si=Uyzy9fSPVAbssTE3",
+            template: "Buatkan sebuah utas (thread) media sosial yang sangat menarik dengan topik: [TOPIK_NICHE]. Gaya bahasa: [EDUKASI/SARKAS/INFORMASI].\n\nAturan:\n1. Terdiri dari 4-7 posts.\n2. Post pertama (1/) berupa hook scroll-stopping.\n3. Format penomoran di awal (1/, 2/, dst)."
+          },
+          {
+            id: "p3_3",
+            title: "BiB #30 - Kalender Edukasi 30 Hari Telegram",
+            video: "https://youtu.be/_ufdg41rlC8?si=zQ_Td2_AFcswBv-k",
+            template: "Bertindaklah sebagai Content Strategist Telegram. Buatkan rencana konten berseri 30 hari untuk channel Telegram saya.\nNiche: [NICHE]\nTarget Audiens: [TARGET_AUDIENS]\nGoal 30 Hari: [GOAL_AKHIR]\n\nSajikan format:\n📅 Hari ke-[Nomor]: [Tema]\nHook: [Hook]\nIsi: [Poin 1]; [Poin 2]\nTindakan: [CTA]\nTeaser: [Teaser Besok]"
+          }
+        ]
+      },
+      fase4: {
+        title: "Fase 4: Konversi",
+        desc: "Sistem copywriting Soft Selling & Hard Selling Telegram/WA, strategi story, dan mesin teknik closing AI.",
+        prompts: [
+          {
+            id: "p4_1",
+            title: "BiB #34 - Soft Selling Broadcast Telegram",
+            video: "https://youtu.be/3TiJik5YDiM?si=hNUc4aA1CAT0_ww-",
+            template: "Bertindaklah sebagai Copywriter profesional soft selling.\nNiche: [NICHE]\nValue Proposition: [VALUE_PROPOSITION]\nAngle Pembuka: [STORYTELLING/EDUKASI/PAIN_POINT]\nTone: [GAYA_BAHASA]\n\nDILARANG sebutkan harga. Tutup dengan CTA halus mengarah ke link: [LINK_EBOOK]"
+          },
+          {
+            id: "p4_2",
+            title: "BiB #37 - Mesin AI Teknik Closing Chat WA",
+            video: "https://youtu.be/uGeidXrpTso?si=lCdK231ehjBvp5tA",
+            template: "Bertindaklah sebagai Mesin Teknik Closing. Analisis screenshot percakapan yang saya unggah.\nGaya bahasa: [GAYA_BAHASA]\n\nBerikan:\n1. Analisis Cepat (1-2 kalimat keraguan pembeli).\n2. 3 Opsi Balasan Sakti (Urgensi, Garansi, Assumptive).\n3. Alasan singkat keberhasilan tiap opsi."
+          }
+        ]
+      }
+    };
+
+    let currentPhase = 'fase1';
+
+    function selectPhase(phaseKey) {
+      currentPhase = phaseKey;
+      document.querySelectorAll('.phase-btn').forEach(btn => {
+        btn.classList.remove('bg-indigo-600/20', 'text-indigo-400', 'border', 'border-indigo-500/30');
+        btn.classList.add('text-slate-300');
+      });
+      const activeBtn = document.getElementById(`tab-${phaseKey}`);
+      activeBtn.classList.add('bg-indigo-600/20', 'text-indigo-400', 'border', 'border-indigo-500/30');
+
+      document.getElementById('phaseTitle').innerText = database[phaseKey].title;
+      document.getElementById('phaseDesc').innerText = database[phaseKey].desc;
+
+      renderPrompts();
+    }
+
+    function renderPrompts(filterText = '') {
+      const container = document.getElementById('promptGrid');
+      container.innerHTML = '';
+
+      const items = database[currentPhase].prompts.filter(p => 
+        p.title.toLowerCase().includes(filterText.toLowerCase()) || 
+        p.template.toLowerCase().includes(filterText.toLowerCase())
+      );
+
+      if(items.length === 0) {
+        container.innerHTML = `<div class="text-center py-12 text-slate-500">Tidak ada prompt yang ditemukan.</div>`;
+        return;
+      }
+
+      items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-800 border border-slate-700 rounded-xl p-5 space-y-4 hover:border-slate-600 transition";
+        card.innerHTML = `
+          <div class="flex justify-between items-start">
+            <h3 class="font-bold text-lg text-slate-100">${item.title}</h3>
+            ${item.video ? `<a href="${item.video}" target="_blank" class="text-xs bg-red-600/20 text-red-400 border border-red-500/30 px-2.5 py-1 rounded-full hover:bg-red-600/30 flex items-center space-x-1"><i class="fa-brands fa-youtube"></i><span>Video</span></a>` : ''}
+          </div>
+          <div class="bg-slate-900/80 p-4 rounded-lg border border-slate-900 font-mono text-sm text-slate-300 whitespace-pre-wrap">${item.template}</div>
+          <div class="flex justify-end">
+            <button onclick="copyToClipboard(\`${item.template.replace(/`/g, '\\`')}\`)" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-2 transition">
+              <i class="fa-regular fa-copy"></i><span>Salin Prompt</span>
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterPrompts() {
+      const text = document.getElementById('searchInput').value;
+      renderPrompts(text);
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text);
+      alert('Prompt berhasil disalin ke clipboard!');
+    }
+
+    // Initialize
+    selectPhase('fase1');
+  </script>
+</body>
+</html>
