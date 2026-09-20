@@ -1,191 +1,2181 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profit Prompt Hub</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profit Prompt Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .highlight-empty {
+            background-color: #fef08a;
+            color: #713f12;
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.375rem;
+            border: 1px dashed #ca8a04;
+            font-family: monospace;
+            font-size: 0.85em;
+            transition: all 0.2s;
+        }
+
+        .highlight-filled {
+            background-color: #e0e7ff;
+            color: #3730a3;
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            border-bottom: 2px solid #818cf8;
+            transition: all 0.2s;
+        }
+
+        #sidebar {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .glass-header {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+        }
+    </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans">
+<body class="h-screen w-screen overflow-hidden flex text-slate-800 selection:bg-indigo-200">
 
-  <!-- Header -->
-  <header class="bg-slate-800 border-b border-slate-700 px-6 py-4 flex justify-between items-center sticky top-0 z-50">
-    <div class="flex items-center space-x-3">
-      <div class="bg-indigo-600 p-2 rounded-lg text-white font-bold">PPH</div>
-      <h1 class="text-xl font-bold tracking-wide">Profit Prompt Hub</h1>
-    </div>
-    <div class="relative w-72">
-      <input type="text" id="searchInput" oninput="filterPrompts()" placeholder="Cari prompt atau materi..." class="w-full bg-slate-900 text-sm rounded-lg pl-9 pr-4 py-2 border border-slate-700 focus:outline-none focus:border-indigo-500">
-      <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-xs text-slate-500"></i>
-    </div>
-  </header>
+    <!-- Sidebar Overlay (Mobile) -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/60 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity" onclick="toggleSidebar()"></div>
 
-  <!-- Main Container -->
-  <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
-    <!-- Sidebar / Phase Navigation -->
-    <nav class="w-full md:w-64 bg-slate-800/50 border-r border-slate-700 p-4 space-y-2">
-      <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-3 mb-2">Navigasi Fase</p>
-      <button onclick="selectPhase('fase1')" id="tab-fase1" class="phase-btn w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-700 transition flex items-center space-x-3 bg-indigo-600/20 text-indigo-400 border border-indigo-500/30">
-        <i class="fa-solid fa-box-archive w-5"></i><span>Fase 1: Produk</span>
-      </button>
-      <button onclick="selectPhase('fase2')" id="tab-fase2" class="phase-btn w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-700 transition flex items-center space-x-3 text-slate-300">
-        <i class="fa-solid fa-video w-5"></i><span>Fase 2: Konten</span>
-      </button>
-      <button onclick="selectPhase('fase3')" id="tab-fase3" class="phase-btn w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-700 transition flex items-center space-x-3 text-slate-300">
-        <i class="fa-solid fa-share-nodes w-5"></i><span>Fase 3: Distribusi</span>
-      </button>
-      <button onclick="selectPhase('fase4')" id="tab-fase4" class="phase-btn w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-700 transition flex items-center space-x-3 text-slate-300">
-        <i class="fa-solid fa-comments-dollar w-5"></i><span>Fase 4: Konversi</span>
-      </button>
-    </nav>
-
-    <!-- Content Workspace -->
-    <main class="flex-1 overflow-y-auto p-6 space-y-6">
-      <div id="phaseTitleContainer" class="border-b border-slate-800 pb-4">
-        <h2 id="phaseTitle" class="text-2xl font-bold text-white">Fase 1: Produksi Produk</h2>
-        <p id="phaseDesc" class="text-sm text-slate-400 mt-1">Modul riset, outline e-book, hingga perancangan desain cover visual.</p>
-      </div>
-
-      <!-- Prompt Cards Grid -->
-      <div id="promptGrid" class="grid grid-cols-1 gap-6">
-        <!-- Dynamic Cards Inserted Here via JS -->
-      </div>
-    </main>
-  </div>
-
-  <script>
-    const database = {
-      fase1: {
-        title: "Fase 1: Produksi Produk",
-        desc: "Panduan dan prompt riset pasar, penyusunan outline, penulisan e-book, serta pengerjaan aset produk digital.",
-        prompts: [
-          {
-            id: "p1_1",
-            title: "Riset Niche & Value Proposition E-Book",
-            video: "https://youtu.be/sample1",
-            template: "Bertindaklah sebagai Produk Strategist E-book. Analisis topik [TOPIK_EBOOK] untuk target audiens [TARGET_AUDIENS]. Buatkan 3 pilihan Angle Judul yang paling menjual dan Value Proposition utama."
-          }
-        ]
-      },
-      fase2: {
-        title: "Fase 2: Produksi Konten",
-        desc: "Prompt penyusunan personal branding, ide konten massal, pembuatan hook viral, hingga pembuatan arahan footage faceless video.",
-        prompts: [
-          {
-            id: "p2_1",
-            title: "Hook Generator (Scroll-Stopping)",
-            video: "https://youtu.be/sample2",
-            template: "Bertindaklah sebagai Short-Form Content Copywriter. Buatkan 5 variasi Hook video durasi 1 menit tentang [TOPIK] untuk platform [PLATFORM] dengan pendekatan [GAYA_BAHASA]."
-          }
-        ]
-      },
-      fase3: {
-        title: "Fase 3: Distribusi",
-        desc: "Kumpulan prompt caption, hashtags, interaksi kompetitor, Threads thread, serta ekosistem materi 30 hari.",
-        prompts: [
-          {
-            id: "p3_1",
-            title: "BiB #26 - Caption & Hashtag Relevan",
-            video: "https://youtu.be/u24LEQ_44i0?si=jJB_sNdbZ-zSk4RB",
-            template: "Tolong analisis video yang saya unggah ini dan buatkan caption serta hashtag yang paling relevan untuk diposting di media sosial.\n\nAturan:\n1. 3 opsi caption menarik.\n2. 3 hashtag relevan di akhir.\n3. Tampilkan hasil langsung tanpa kalimat pembuka/penutup."
-          },
-          {
-            id: "p3_2",
-            title: "BiB #27 - Utas (Thread) Threads / X",
-            video: "https://youtu.be/0eqCuIwRTjY?si=Uyzy9fSPVAbssTE3",
-            template: "Buatkan sebuah utas (thread) media sosial yang sangat menarik dengan topik: [TOPIK_NICHE]. Gaya bahasa: [EDUKASI/SARKAS/INFORMASI].\n\nAturan:\n1. Terdiri dari 4-7 posts.\n2. Post pertama (1/) berupa hook scroll-stopping.\n3. Format penomoran di awal (1/, 2/, dst)."
-          },
-          {
-            id: "p3_3",
-            title: "BiB #30 - Kalender Edukasi 30 Hari Telegram",
-            video: "https://youtu.be/_ufdg41rlC8?si=zQ_Td2_AFcswBv-k",
-            template: "Bertindaklah sebagai Content Strategist Telegram. Buatkan rencana konten berseri 30 hari untuk channel Telegram saya.\nNiche: [NICHE]\nTarget Audiens: [TARGET_AUDIENS]\nGoal 30 Hari: [GOAL_AKHIR]\n\nSajikan format:\n📅 Hari ke-[Nomor]: [Tema]\nHook: [Hook]\nIsi: [Poin 1]; [Poin 2]\nTindakan: [CTA]\nTeaser: [Teaser Besok]"
-          }
-        ]
-      },
-      fase4: {
-        title: "Fase 4: Konversi",
-        desc: "Sistem copywriting Soft Selling & Hard Selling Telegram/WA, strategi story, dan mesin teknik closing AI.",
-        prompts: [
-          {
-            id: "p4_1",
-            title: "BiB #34 - Soft Selling Broadcast Telegram",
-            video: "https://youtu.be/3TiJik5YDiM?si=hNUc4aA1CAT0_ww-",
-            template: "Bertindaklah sebagai Copywriter profesional soft selling.\nNiche: [NICHE]\nValue Proposition: [VALUE_PROPOSITION]\nAngle Pembuka: [STORYTELLING/EDUKASI/PAIN_POINT]\nTone: [GAYA_BAHASA]\n\nDILARANG sebutkan harga. Tutup dengan CTA halus mengarah ke link: [LINK_EBOOK]"
-          },
-          {
-            id: "p4_2",
-            title: "BiB #37 - Mesin AI Teknik Closing Chat WA",
-            video: "https://youtu.be/uGeidXrpTso?si=lCdK231ehjBvp5tA",
-            template: "Bertindaklah sebagai Mesin Teknik Closing. Analisis screenshot percakapan yang saya unggah.\nGaya bahasa: [GAYA_BAHASA]\n\nBerikan:\n1. Analisis Cepat (1-2 kalimat keraguan pembeli).\n2. 3 Opsi Balasan Sakti (Urgensi, Garansi, Assumptive).\n3. Alasan singkat keberhasilan tiap opsi."
-          }
-        ]
-      }
-    };
-
-    let currentPhase = 'fase1';
-
-    function selectPhase(phaseKey) {
-      currentPhase = phaseKey;
-      document.querySelectorAll('.phase-btn').forEach(btn => {
-        btn.classList.remove('bg-indigo-600/20', 'text-indigo-400', 'border', 'border-indigo-500/30');
-        btn.classList.add('text-slate-300');
-      });
-      const activeBtn = document.getElementById(`tab-${phaseKey}`);
-      activeBtn.classList.add('bg-indigo-600/20', 'text-indigo-400', 'border', 'border-indigo-500/30');
-
-      document.getElementById('phaseTitle').innerText = database[phaseKey].title;
-      document.getElementById('phaseDesc').innerText = database[phaseKey].desc;
-
-      renderPrompts();
-    }
-
-    function renderPrompts(filterText = '') {
-      const container = document.getElementById('promptGrid');
-      container.innerHTML = '';
-
-      const items = database[currentPhase].prompts.filter(p => 
-        p.title.toLowerCase().includes(filterText.toLowerCase()) || 
-        p.template.toLowerCase().includes(filterText.toLowerCase())
-      );
-
-      if(items.length === 0) {
-        container.innerHTML = `<div class="text-center py-12 text-slate-500">Tidak ada prompt yang ditemukan.</div>`;
-        return;
-      }
-
-      items.forEach(item => {
-        const card = document.createElement('div');
-        card.className = "bg-slate-800 border border-slate-700 rounded-xl p-5 space-y-4 hover:border-slate-600 transition";
-        card.innerHTML = `
-          <div class="flex justify-between items-start">
-            <h3 class="font-bold text-lg text-slate-100">${item.title}</h3>
-            ${item.video ? `<a href="${item.video}" target="_blank" class="text-xs bg-red-600/20 text-red-400 border border-red-500/30 px-2.5 py-1 rounded-full hover:bg-red-600/30 flex items-center space-x-1"><i class="fa-brands fa-youtube"></i><span>Video</span></a>` : ''}
-          </div>
-          <div class="bg-slate-900/80 p-4 rounded-lg border border-slate-900 font-mono text-sm text-slate-300 whitespace-pre-wrap">${item.template}</div>
-          <div class="flex justify-end">
-            <button onclick="copyToClipboard(\`${item.template.replace(/`/g, '\\`')}\`)" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-2 transition">
-              <i class="fa-regular fa-copy"></i><span>Salin Prompt</span>
+    <!-- Sidebar -->
+    <aside id="sidebar" class="bg-white w-72 h-full border-r border-slate-200 flex flex-col fixed lg:relative z-50 transform -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none">
+        
+        <!-- Logo/Header -->
+        <div class="h-16 flex items-center px-6 border-b border-slate-200 bg-white shrink-0">
+            <div class="flex items-center gap-2.5 text-indigo-600">
+                <div class="bg-indigo-600 text-white p-1.5 rounded-lg shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                </div>
+                <h1 class="text-xl font-extrabold tracking-tight text-slate-800">ProfitHub</h1>
+            </div>
+            <button class="ml-auto lg:hidden text-slate-400 hover:text-slate-700 bg-slate-100 p-1.5 rounded-md" onclick="toggleSidebar()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
+        </div>
 
-    function filterPrompts() {
-      const text = document.getElementById('searchInput').value;
-      renderPrompts(text);
-    }
+        <!-- Progress Summary -->
+        <div class="p-5 border-b border-slate-100 bg-gradient-to-br from-slate-50 to-indigo-50/30 shrink-0">
+            <div class="flex justify-between items-end mb-2.5">
+                <div class="flex flex-col">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Global Progress</span>
+                    <span class="text-sm font-semibold text-slate-700"><span id="progressCount">0</span> / <span id="totalCount">0</span> Modul</span>
+                </div>
+                <span id="progressText" class="text-lg font-black text-indigo-600">0%</span>
+            </div>
+            <div class="w-full bg-slate-200/80 rounded-full h-2.5 shadow-inner overflow-hidden">
+                <div id="progressBar" class="bg-gradient-to-r from-indigo-500 to-violet-500 h-full rounded-full transition-all duration-700 w-0 relative">
+                    <div class="absolute top-0 left-0 right-0 bottom-0 bg-white/20 w-full h-full" style="animation: shimmer 2s infinite;"></div>
+                </div>
+            </div>
+        </div>
 
-    function copyToClipboard(text) {
-      navigator.clipboard.writeText(text);
-      alert('Prompt berhasil disalin ke clipboard!');
-    }
+        <!-- Navigation List -->
+        <nav id="sidebarNav" class="flex-1 overflow-y-auto p-3 space-y-1">
+            <!-- Rendered via JS -->
+        </nav>
+    </aside>
 
-    // Initialize
-    selectPhase('fase1');
-  </script>
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-full min-w-0 bg-slate-50 relative">
+        
+        <!-- Top Header -->
+        <header class="h-16 glass-header border-b border-slate-200 flex items-center justify-between px-4 lg:px-8 shrink-0 z-10 sticky top-0">
+            <div class="flex items-center gap-3 overflow-hidden">
+                <button class="lg:hidden text-slate-500 hover:text-slate-800 p-1.5 bg-white rounded-md shadow-sm border border-slate-200" onclick="toggleSidebar()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
+                </button>
+                <div class="flex flex-col min-w-0 border-l-2 border-indigo-500 pl-3">
+                    <span id="headerCategory" class="text-[10px] font-bold text-indigo-500 uppercase tracking-wider truncate">Pilih Modul</span>
+                    <h2 id="headerTitle" class="text-base font-bold text-slate-800 truncate leading-tight">Selamat Datang di ProfitHub</h2>
+                </div>
+            </div>
+            
+            <div class="shrink-0 ml-4 hidden sm:block" id="headerActionContainer">
+                <!-- Dynamic Header Action (e.g., Video Button) -->
+            </div>
+        </header>
+
+        <!-- Dynamic Workspace Container -->
+        <div class="flex-1 overflow-y-auto p-4 lg:p-8 relative scroll-smooth" id="mainScrollArea">
+            
+            <!-- VIEW 0: Welcome Screen -->
+            <div id="view-welcome" class="h-full flex flex-col items-center justify-center text-center fade-in max-w-2xl mx-auto">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 mb-6 relative overflow-hidden w-full">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-violet-500"></div>
+                    <div class="bg-indigo-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    </div>
+                    <h2 class="text-2xl font-extrabold text-slate-800 mb-2">Profit Prompt Hub</h2>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-6">Pusat komando Anda untuk mengeksekusi strategi digital marketing, meracik prompt AI, dan mengakses aset PLR. Semua tersusun rapi dalam satu dashboard.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 flex items-start gap-2">
+                            <span class="text-emerald-500 mt-0.5">✔</span>
+                            <span class="text-xs font-medium text-slate-600">Alur Belajar Terstruktur (Fase 1-4)</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 flex items-start gap-2">
+                            <span class="text-emerald-500 mt-0.5">✔</span>
+                            <span class="text-xs font-medium text-slate-600">Auto-Generate Prompt Dinamis</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 flex items-start gap-2">
+                            <span class="text-emerald-500 mt-0.5">✔</span>
+                            <span class="text-xs font-medium text-slate-600">Akses Cepat Gudang Ebook PLR</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 flex items-start gap-2">
+                            <span class="text-emerald-500 mt-0.5">✔</span>
+                            <span class="text-xs font-medium text-slate-600">Materi Level-Up Fase Expert</span>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="document.querySelector('#sidebar button').click()" class="lg:hidden bg-indigo-600 text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-md hover:bg-indigo-700 transition-colors">Buka Menu Navigasi</button>
+            </div>
+
+            <!-- VIEW 1: Article / Theory Mode -->
+            <div id="view-article" class="hidden max-w-4xl mx-auto pb-20 fade-in">
+                <!-- Video Button Banner (Pure Link) -->
+                <div id="articleVideoWrapper" class="mb-6 hidden">
+                    <a id="articleVideoBtn" href="#" target="_blank" class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white p-6 rounded-2xl shadow-lg transition-transform hover:scale-[1.01]">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-white/20 p-3 rounded-full backdrop-blur-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 ml-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg>
+                            </div>
+                            <div class="text-left">
+                                <h3 class="font-bold text-lg leading-tight">Tonton Video Tutorial</h3>
+                                <p class="text-rose-100 text-sm mt-0.5">Buka materi video di tab baru</p>
+                            </div>
+                        </div>
+                        <div class="hidden sm:block shrink-0 bg-white/10 px-4 py-2 rounded-lg text-sm font-semibold backdrop-blur-sm border border-white/20">
+                            Buka YouTube ↗
+                        </div>
+                    </a>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-6 md:p-10">
+                        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold mb-4" id="articleTag">Kategori</div>
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800 mb-6" id="articleHeadline">Judul Artikel</h2>
+                        
+                        <div id="articleContent" class="prose prose-slate prose-indigo max-w-none text-slate-600 leading-loose">
+                            <!-- Injected Content -->
+                        </div>
+                        
+                        <div class="mt-10 pt-6 border-t border-slate-100 flex justify-center">
+                            <button id="articleCompleteBtn" class="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold transition-all shadow-md flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                                Tandai Selesai & Lanjut
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 2: PLR Warehouse Gallery -->
+            <div id="view-plr" class="hidden max-w-6xl mx-auto pb-20 fade-in">
+                <div class="mb-8 text-center max-w-2xl mx-auto">
+                    <h2 class="text-3xl font-extrabold text-slate-800 mb-3" id="plrGalleryTitle">Gudang Ebook PLR</h2>
+                    <p class="text-slate-500" id="plrGalleryDesc">Pilih niche yang Anda inginkan. Setiap niche berisi 3 ebook dengan struktur <b>Value Ladder</b> (Entry, Main, Hero) yang siap Anda modifikasi di Fase 1.</p>
+                </div>
+
+                <!-- Grid of Niches -->
+                <div id="plrGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <!-- Injected PLR Cards -->
+                </div>
+            </div>
+
+            <!-- VIEW 3: Interactive Prompt Workspace -->
+            <div id="view-prompt" class="hidden flex-col gap-6 max-w-7xl mx-auto pb-20 fade-in items-start w-full">
+                
+                <!-- Prompt Video Banner (Pure Link) -->
+                <div id="promptVideoWrapper" class="w-full hidden shrink-0">
+                    <a id="promptVideoBtn" href="#" target="_blank" class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white p-6 rounded-2xl shadow-lg transition-transform hover:scale-[1.01]">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-white/20 p-3 rounded-full backdrop-blur-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 ml-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg>
+                            </div>
+                            <div class="text-left">
+                                <h3 class="font-bold text-lg leading-tight">Tonton Video Tutorial</h3>
+                                <p class="text-rose-100 text-sm mt-0.5">Buka materi video instruksi di tab baru</p>
+                            </div>
+                        </div>
+                        <div class="hidden sm:block shrink-0 bg-white/10 px-4 py-2 rounded-lg text-sm font-semibold backdrop-blur-sm border border-white/20">
+                            Buka YouTube ↗
+                        </div>
+                    </a>
+                </div>
+
+                <div id="promptContentWrapper" class="flex flex-col lg:flex-row gap-6 w-full items-start">
+                    
+                    <!-- Form Input Panel (Left) -->
+                    <div id="inputPanel" class="w-full lg:w-[400px] xl:w-[450px] bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col shrink-0 lg:sticky lg:top-0">
+                        <div class="bg-gradient-to-r from-indigo-50 to-white border-b border-indigo-100 px-5 py-4 flex justify-between items-center">
+                            <h3 class="font-bold text-slate-800 flex items-center gap-2 text-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                Isi Variabel Prompt
+                            </h3>
+                        </div>
+                        <div id="formContainer" class="p-5 flex flex-col gap-4 overflow-y-auto max-h-[60vh] custom-scrollbar">
+                            <!-- Form input dinamis akan dirender di sini oleh JS -->
+                        </div>
+                    </div>
+                    
+                    <!-- Live Preview Panel (Right) -->
+                    <div class="w-full flex-1 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+                        <div class="bg-slate-50 border-b border-slate-200 px-5 py-4 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-bold text-slate-800 flex items-center gap-2 text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                                    Live Preview Result
+                                </h3>
+                            </div>
+                            <button onclick="copyPrompt()" id="btnCopyTop" class="hidden sm:flex items-center gap-1.5 bg-slate-800 hover:bg-black text-white px-3 py-1.5 rounded-md text-xs font-semibold transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                                <span>Copy Prompt</span>
+                            </button>
+                        </div>
+                        
+                        <div class="p-6 bg-white relative group flex-1 min-h-[400px] flex flex-col">
+                            <div id="previewContent" class="whitespace-pre-wrap font-sans text-slate-700 leading-relaxed text-[14px] select-all flex-1">
+                                <!-- Generated Preview -->
+                            </div>
+                            
+                            <div class="mt-8 pt-6 border-t border-slate-100 text-center shrink-0">
+                                <button onclick="copyPrompt()" id="btnCopyBottom" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white px-8 py-3.5 rounded-xl text-sm font-bold transition-all shadow-md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                                    <span id="copyTextBottom">Salin Prompt ke Clipboard</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End of promptContentWrapper -->
+            </div>
+        </div>
+        
+        <!-- Toast Notification -->
+        <div id="toast" class="fixed bottom-6 right-6 bg-slate-800 text-white px-6 py-3 rounded-xl shadow-2xl font-semibold flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 z-50 pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+            Prompt Berhasil Disalin!
+        </div>
+    </main>
+
+    <script>
+        // --- 1. STRUKTUR DATA APLIKASI FULL-STACK ---
+        
+        // Define Categories Structure for the Sidebar
+        const CATEGORIES = [
+            { id: "cat-start", title: "🚀 Start Here", color: "text-orange-500" },
+            { id: "cat-plr", title: "📚 Gudang Ebook PLR", color: "text-blue-500" },
+            { id: "cat-fase1", title: "🛠️ 01. Fase Produksi Produk", color: "text-indigo-500" },
+            { id: "cat-fase2", title: "🛠️ 02. Fase Produksi Konten", color: "text-indigo-500" },
+            { id: "cat-fase3", title: "🛠️ 03. Fase Distribusi", color: "text-indigo-500" },
+            { id: "cat-fase4", title: "🛠️ 04. Fase Konversi", color: "text-indigo-500" },
+            { id: "cat-expert-web", title: "💎 Fase Expert: Website", color: "text-purple-500" },
+            { id: "cat-bonus", title: "🎁 Bonus & Kelas", color: "text-rose-500" }
+        ];
+
+        // The Unified Database
+        const appDatabase = [
+            // --- START HERE ---
+            {
+                id: "welcome-main", categoryId: "cat-start", type: "welcome",
+                title: "🏠 Beranda Utama"
+            },
+            {
+                id: "start-1", categoryId: "cat-start", type: "prompt", isEditable: true,
+                title: "Strategi Capai 1 Juta Pertama (Part 1)",
+                videoUrl: "https://youtu.be/lqJqPN70kCM", 
+                rawPrompt: `SATU JUTA PERTAMA PART 1 🎬
+
+Syarat Belajar: 📚
+1. Tuntaskan dulu Materi di Fase Produksi Produk + Konten ✅
+2. Ga Hanya Mempelajari Materi di Fase itu, kamu juga WAJIB mempraktekkan Materinya 🔧
+3. Jika Udah? Maka baru Boleh Nonton 1JT Pertama Part 1 👇
+
+TUGAS SETELAH NONTON VIDEO PART 1
+Isi Bagian-bagian dibawah ini 👇
+
+1. Link Landingpage Lynk.id Kamu:
+[Link Landingpage Lynk.id Kamu]
+
+2. Niche Kamu:
+[Niche Kamu]
+
+3. Value Proposition Kamu:
+[Value Proposition Kamu]
+
+4. Link Channel Telegram Kamu:
+[Link Channel Telegram Kamu]
+
+5. Link Tiktok:
+[Link Tiktok]
+
+6. Link Instagram:
+[Link Instagram]
+
+7. Link Youtube:
+[Link Youtube]`
+            },
+            {
+                id: "start-2", categoryId: "cat-start", type: "article",
+                title: "Strategi Capai 1 Juta Pertama (Part 2)",
+                videoUrl: "https://youtu.be/j334729nukE", 
+                content: `
+                    <h3>SATU JUTA PERTAMA PART 2 🎬🎥</h3>
+                    <p>Syarat Belajar: 📚📝<br>
+                    1️⃣ Tuntaskan dulu Materi di Fase Produksi Produk + Konten, Fase Distribusi, dan Fase Konversi ✅🎯<br>
+                    2️⃣ Ga Hanya Mempelajari Materi di Fase itu, kamu juga WAJIB mempraktekkan Materinya 🔧💪<br>
+                    3️⃣ Menyelesaikan Tugas Part 1 Diatas 📄👆<br>
+                    4️⃣ Jika sudah? Kamu boleh tonton 1JT Pertama Part 2 👇🍿</p>
+                    
+                    <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 my-6 rounded-r-lg">
+                        <p class="font-bold text-indigo-900 m-0">TUGAS SETELAH NONTON PART 2</p>
+                        <ul class="text-sm text-indigo-700 m-0 mt-2 pl-4 list-disc space-y-1">
+                            <li>Mulai Konsisten Ngonten (Tiktok, Reels, Ig)</li>
+                            <li>Mulai Konsisten Sharing di Channel Telegram, Story Wa</li>
+                            <li>Mulai Bangun Base Audiens & Base Customer</li>
+                            <li>Mulai Bentuk Habit Baik. Caranya? Join Channel WHATSAPP Productivity Code di bawah ini.</li>
+                        </ul>
+                    </div>
+                    <a href="https://whatsapp.com/channel/0029Vb82F4K1nozCRmGaqx12" target="_blank" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                        Join Channel WA Productivity Code
+                    </a>
+                `
+            },
+
+            // --- GUDANG PLR ---
+            {
+                id: "plr-main", categoryId: "cat-plr", type: "plr-gallery",
+                title: "Katalog 10 Niche PLR",
+                plrData: [
+                    {
+                        niche: "Bisnis & Uang", icon: "💰",
+                        ebooks: [
+                            { tier: "Entry Level", title: "Mindset Pebisnis Pemula", desc: "Materi dasar memulai bisnis digital.", link: "#link-gdrive-1" },
+                            { tier: "Main Product", title: "Strategi Cuan dari Rumah", desc: "Langkah teknis membangun sumber income.", link: "#link-gdrive-2" },
+                            { tier: "Hero Product", title: "Blueprint Bisnis Autopilot", desc: "Sistem bisnis yang berjalan otomatis.", link: "#link-gdrive-3" }
+                        ]
+                    },
+                    {
+                        niche: "Design & Editing", icon: "🎨",
+                        ebooks: [
+                            { tier: "Entry Level", title: "Prinsip Dasar Desain", desc: "Panduan komposisi dan warna.", link: "#link-gdrive-4" },
+                            { tier: "Main Product", title: "Jago Editing di HP", desc: "Tutorial capcut & canva untuk pemula.", link: "#link-gdrive-5" },
+                            { tier: "Hero Product", title: "Masterclass Visual Branding", desc: "Membangun identitas brand yang kuat.", link: "#link-gdrive-6" }
+                        ]
+                    },
+                    {
+                        niche: "Digital Marketing", icon: "📈",
+                        ebooks: [
+                            { tier: "Entry Level", title: "Dasar Social Media", desc: "Panduan digital marketing pemula.", link: "#link-gdrive-7" },
+                            { tier: "Main Product", title: "Algoritma Viral 2024", desc: "Trik menaikkan jangkauan organik.", link: "#link-gdrive-8" },
+                            { tier: "Hero Product", title: "Mastering FB & IG Ads", desc: "Ilmu tingkat lanjut tentang konversi.", link: "#link-gdrive-9" }
+                        ]
+                    },
+                    {
+                        niche: "Health & Wellness", icon: "🥗",
+                        ebooks: [
+                            { tier: "Entry Level", title: "Mitos Diet Populer", desc: "Bongkar kebohongan seputar diet.", link: "#link-gdrive-10" },
+                            { tier: "Main Product", title: "Resep Defisit Kalori", desc: "Panduan teknis dan menu makanan harian.", link: "#link-gdrive-11" },
+                            { tier: "Hero Product", title: "Mentoring Body Recomp", desc: "Program transformasi tubuh lengkap.", link: "#link-gdrive-12" }
+                        ]
+                    },
+                    {
+                        niche: "Parenting", icon: "👨‍👩‍👧",
+                        ebooks: [
+                            { tier: "Entry Level", title: "Psikologi Anak Dasar", desc: "Memahami fase tumbuh kembang balita.", link: "#link-gdrive-13" },
+                            { tier: "Main Product", title: "Komunikasi Tanpa Amarah", desc: "Teknik bicara dan parenting sehat.", link: "#link-gdrive-14" },
+                            { tier: "Hero Product", title: "Blueprint Keluarga Harmonis", desc: "Sistem parenting keluarga komprehensif.", link: "#link-gdrive-15" }
+                        ]
+                    },
+                    {
+                        niche: "Personal Finance", icon: "💳",
+                        ebooks: [
+                            { tier: "Entry Level", title: "Mindset Finansial Cerdas", desc: "Mengenal arus kas dan menabung.", link: "#link-gdrive-16" },
+                            { tier: "Main Product", title: "Manajemen Gaji UMR", desc: "Solusi mengatur keuangan pas-pasan.", link: "#link-gdrive-17" },
+                            { tier: "Hero Product", title: "Blueprint Investasi & Aset", desc: "Panduan mengamankan harta masa depan.", link: "#link-gdrive-18" }
+                        ]
+                    },
+                    {
+                        niche: "Productivity", icon: "⏱️",
+                        ebooks: [
+                            { tier: "Entry Level", title: "Cara Bangun Pagi", desc: "Habit dasar orang-orang sukses.", link: "#link-gdrive-19" },
+                            { tier: "Main Product", title: "Fokus & Deep Work", desc: "Manajemen waktu tingkat lanjut anti-distraksi.", link: "#link-gdrive-20" },
+                            { tier: "Hero Product", title: "Desain Hidup Anti-Stuck", desc: "Framework total menguasai produktivitas.", link: "#link-gdrive-21" }
+                        ]
+                    },
+                    {
+                        niche: "Public Speaking", icon: "🎙️",
+                        ebooks: [
+                            { tier: "Entry Level", title: "Mengatasi Demam Panggung", desc: "Persiapan mental sebelum presentasi.", link: "#link-gdrive-22" },
+                            { tier: "Main Product", title: "Struktur Presentasi Memukau", desc: "Teknik menyusun materi presentasi audiens.", link: "#link-gdrive-23" },
+                            { tier: "Hero Product", title: "Masterclass Storytelling", desc: "Seni memengaruhi orang lewat cerita.", link: "#link-gdrive-24" }
+                        ]
+                    },
+                    {
+                        niche: "Self-Development", icon: "🧠",
+                        ebooks: [
+                            { tier: "Entry Level", title: "Kenali Diri Sendiri", desc: "Ebook tes kepribadian & potensi diri.", link: "#link-gdrive-25" },
+                            { tier: "Main Product", title: "Membangun Kepercayaan Diri", desc: "Latihan harian untuk mental pemenang.", link: "#link-gdrive-26" },
+                            { tier: "Hero Product", title: "Life Purpose Blueprint", desc: "Menemukan arah tujuan hidup utama.", link: "#link-gdrive-27" }
+                        ]
+                    },
+                    {
+                        niche: "Social Media", icon: "📱",
+                        ebooks: [
+                            { tier: "Entry Level", title: "Optimasi Profil Instagram", desc: "Langkah awal membangun audiens.", link: "#link-gdrive-28" },
+                            { tier: "Main Product", title: "Rahasia Konten FYP", desc: "Anatomi video viral TikTok & IG Reels.", link: "#link-gdrive-29" },
+                            { tier: "Hero Product", title: "Monetisasi Akun Publik", desc: "Cara ubah followers menjadi sumber cuan.", link: "#link-gdrive-30" }
+                        ]
+                    }
+                ]
+            },
+
+            // --- FASE 1: PRODUKSI PRODUK ---
+            {
+                id: "bib-1a", categoryId: "cat-fase1", type: "prompt", isEditable: false,
+                title: "ProfitHub #01a - Analisis & Cara Bikin Cover",
+                videoUrl: "https://youtu.be/oTZUYPBCdkc",
+                rawPrompt: `Kamu adalah ahli marketing digital, copywriting, desain visual.
+Sebelum membuat output, baca dan pahami seluruh isi file yang diupload. Identifikasi topik utama, manfaat utama, masalah yang diselesaikan, target audiens paling potensial, dan platform penjualan yang paling cocok. Gunakan hasil analisis ini sebagai dasar semua output berikutnya.
+
+Jika ada informasi yang ambigu atau kurang, dan itu bisa mengubah target audiens, positioning, manfaat utama, atau platform penjualan, ajukan 1–3 pertanyaan klarifikasi sebelum melanjutkan. Jika tidak, lanjutkan dengan hipotesis yang masuk akal dan tandai jelas sebagai hipotesis, bukan fakta.
+
+Tugasmu:
+1. Ringkas isi file dengan jelas dan sederhana.
+2. Identifikasi target audiens paling potensial: usia, profesi, level pengetahuan, masalah utama, dan alasan mereka tertarik.
+3. Rekomendasikan platform penjualan paling cocok dan jelaskan alasannya.
+4. Buat 3 judul yang kuat, spesifik, dan menjual dengan angle: profesional, problem-solving, dan hasil/transformasi. Jelaskan alasan kenapa tiap judul berpotensi menjual.
+5. Tulis deskripsi produk yang singkat, persuasif, profesional, dan menonjolkan manfaat, urgensi, serta pembeda produk.
+6. Buat 3–5 value utama dari sudut pandang calon pembeli: apa manfaatnya, kenapa layak dibeli, dan apa yang membuatnya berbeda.
+7. Buat konsep ilustrasi atau cover yang terlihat premium, modern, relevan, dan punya nilai jual tinggi.
+
+Gunakan bahasa Indonesia yang rapi, jelas, profesional, tidak lebay, dan hindari judul generik, klaim kosong, atau deskripsi yang terdengar seperti template AI.
+
+Format output:
+- Ringkasan isi file
+- Target audiens
+- Platform rekomendasi penjualan + alasan
+- 3 Judul + angle + alasan
+- Deskripsi jualan
+- 3–5 Value utama
+- Konsep ilustrasi/cover`
+            },
+            {
+                id: "bib-1b", categoryId: "cat-fase1", type: "prompt", isEditable: true,
+                title: "ProfitHub #01b - Generate Gambar Cover Ebook",
+                videoUrl: "https://youtu.be/oTZUYPBCdkc",
+                rawPrompt: `Buat satu gambar FRONT COVER EBOOK final berdasarkan output yang sudah kamu buat sebelumnya tentang file ini.
+
+Gunakan hasil analisismu sendiri sebagai fondasi visual, terutama:
+- Judul terbaik yang paling menjual
+- Target audiens utama
+- Deskripsi produk
+- Value utama produk
+- Konsep cover yang sebelumnya sudah kamu rekomendasikan
+
+Gunakan identitas berikut pada cover:
+- Nama pemilik: [ISI NAMA ANDA]
+- Brand/penerbit (opsional): [ISI JIKA ADA]
+
+Aturan identitas:
+- Jangan gunakan kata "Penulis" atau "Ditulis oleh" jika itu tidak sesuai fakta.
+- Jika perlu mencantumkan nama, gunakan label netral seperti "Dipersembahkan oleh", "Brand", atau "Produk digital oleh".
+- Pastikan identitas terlihat profesional dan tidak berlebihan.
+
+Aturan format cover:
+- Hasil akhir harus jelas terlihat sebagai FRONT COVER EBOOK, bukan poster, banner, thumbnail, flyer, atau materi promosi.
+- Gunakan orientasi vertikal/portrait dengan rasio cover buku, sekitar 2:3.
+- Desain harus memenuhi seluruh bidang cover, bukan gambar kecil di tengah dengan ruang kosong seperti poster.
+- Judul utama harus menjadi fokus terbesar dan paling mudah dibaca.
+- Subjudul, identitas pemilik/brand, dan elemen pendukung harus tersusun rapi dengan hierarki visual yang jelas.
+- Cover harus terasa seperti sampul buku digital premium yang siap dijual di marketplace.
+
+Tugasmu:
+1. Pilih 1 judul terbaik yang paling kuat untuk dijadikan cover utama.
+2. Gunakan judul, deskripsi, value, dan target audiens itu sebagai dasar cover.
+3. Buat cover yang premium, modern, profesional, bersih, dan bernilai jual tinggi.
+4. Pastikan cover memvisualkan manfaat dan positioning produk, bukan sekadar topiknya.
+5. Jika ada teks di cover, gunakan teks singkat, kuat, jelas, dan mudah dibaca.
+
+Larangan visual yang wajib dipatuhi:
+- Jangan tampilkan makhluk bernyawa apa pun.
+- Jangan tampilkan manusia, hewan, wajah, tubuh, mata, tangan, atau bentuk biologis apa pun.
+- Jangan tampilkan representasi makhluk bernyawa dalam bentuk benda mati, termasuk patung, bust statue, relief, manekin, boneka, topeng wajah, atau celengan berbentuk hewan.
+- Jika benar-benar perlu representasi figur, gunakan hanya siluet hitam pekat tanpa detail anatomi atau wajah.
+
+Hindari:
+- Cover generik
+- Desain terlalu ramai
+- Kesan murahan
+- Warna norak
+- Layout seperti template gratisan
+- Tampilan seperti banner promosi atau thumbnail YouTube
+
+Arah visual:
+- Fokus pada kesan high value
+- Tampilan premium dan profesional
+- Relevan dengan isi ebook dan psikologi calon pembeli
+- Utamakan tipografi elegan, bentuk geometris, simbol non-makhluk hidup, tekstur premium, cahaya, dan komposisi yang rapi
+
+Sekarang buat satu gambar FRONT COVER EBOOK vertikal final.`
+            },
+            {
+                id: "bib-2a", categoryId: "cat-fase1", type: "prompt", isEditable: true,
+                title: "ProfitHub #02a - Visual Marketing Mockup 1",
+                videoUrl: "https://youtu.be/3TTKutVJBCE",
+                rawPrompt: `Buatkan gambar lifestyle aesthetic yang menampilkan sebuah ebook dengan detail berikut:
+
+MOCKUP:
+- Bentuk tampilan    : [buku fisik 3D / tablet / smartphone / semua digabung]
+- Posisi ebook       : [flat lay dari atas / berdiri / sedikit miring 45 derajat]
+- Sudut kamera       : [top-down / eye level / sedikit dari atas]
+
+SETTING & BACKGROUND:
+- Lokasi/latar       : [meja kayu / meja marmer / karpet bulu / latar outdoor]
+- Suasana tempat     : [sudut kerja rumahan / kafe estetik / ruang baca / alam terbuka]
+
+OBJEK PENDUKUNG (props):
+- Objek utama        : [contoh: secangkir kopi, laptop, tanaman kecil, buku catatan]
+- Objek tambahan     : [contoh: kacamata, lilin, bunga kering, pena]
+- Posisi objek       : [tersebar natural di sekitar ebook / mengelilingi / di sisi kanan]
+
+MOOD & ESTETIKA:
+- Palet warna        : [contoh: earthy tone, putih bersih & hijau, dark moody]
+- Gaya estetik       : [minimalis nordic / warm cozy / dark academia / clean modern]
+- Pencahayaan        : [cahaya jendela natural / lampu warm kuning / studio soft light]
+
+FEEL KESELURUHAN:
+- Kesan yang ingin ditampilkan : [produktif & inspiratif / santai & nyaman / premium & eksklusif]
+- Yang TIDAK boleh ada         : teks promosi, logo, watermark, kesan iklan
+
+Buat dalam format vertikal (portrait 4:5), resolusi tinggi, foto terlihat natural dan organic seperti konten lifestyle kreator, bukan tampilan iklan.
+
+Terjemahkan seluruh deskripsi ini ke Bahasa Inggris lalu gunakan sebagai prompt untuk generate gambarnya.`
+            },
+            {
+                id: "bib-2b", categoryId: "cat-fase1", type: "prompt", isEditable: false,
+                title: "ProfitHub #02b - Visual Marketing Mockup 2 (Auto)",
+                videoUrl: "https://youtu.be/3TTKutVJBCE",
+                rawPrompt: `Saya akan memberikan kamu sebuah gambar cover ebook dan deskripsi singkat.
+
+Tugasmu:
+1. Analisis gambar tersebut secara mendalam — identifikasi warna dominan, gaya visual, mood, dan karakter desainnya.
+
+2. Berdasarkan analisis kamu sendiri, tentukan:
+   - Props dan objek pendukung yang paling relevan
+   - Setting dan latar yang paling sesuai
+   - Gaya estetik yang paling cocok
+   - Jenis pencahayaan yang paling tepat
+   - Komposisi dan posisi mockup yang paling kuat secara visual
+
+3. Buat prompt Bahasa Inggris yang siap digunakan untuk generate gambar berupa lifestyle mockup foto — terlihat natural, estetik, dan tidak terlihat seperti iklan atau promosi. (Ratio gambar 4:5).
+
+4. Langsung generate gambarnya.
+
+Deskripsi singkat dari saya:`
+            },
+            {
+                id: "bib-3", categoryId: "cat-fase1", type: "prompt", isEditable: true,
+                title: "ProfitHub #03 - Menentukan Niche Potensial",
+                videoUrl: "https://youtu.be/t2gIIraB3OY",
+                rawPrompt: `Kamu adalah sistem rekomendasi niche bisnis digital untuk pemula.
+
+TUGASMU HANYA SATU: Pilih 1 niche dari DAFTAR DI BAWAH INI yang paling relevan dan paling mudah dijual ke audiens/circle pengguna.
+
+Kamu DILARANG merekomendasikan niche di luar daftar ini.
+Kamu DILARANG merekomendasikan niche yang ada di daftar NICHE YANG DIHINDARI pengguna.
+Jika data yang diisi terlalu umum atau tidak jelas, minta pengguna melengkapi sebelum memberi rekomendasi.
+
+DAFTAR NICHE YANG TERSEDIA:
+1. Bisnis & Uang — untuk audiens yang ingin mulai bisnis sampingan atau punya masalah income.
+2. Personal Finance — untuk audiens yang ngeluh gaji habis, hutang, atau tidak bisa nabung.
+3. Digital Marketing — untuk audiens yang ingin jualan online tapi tidak tahu caranya.
+4. Sosial Media — untuk audiens yang ingin grow akun atau membangun personal branding.
+5. Design & Editing — untuk audiens yang butuh skill desain konten atau editing video.
+6. Productivity — untuk audiens yang ngeluh tidak punya waktu atau susah fokus.
+7. Public Speaking — untuk audiens yang takut bicara di depan umum atau presentasi.
+8. Health & Wellness — untuk audiens yang ngeluh soal badan, diet, atau gaya hidup sehat.
+9. Self-Dev — untuk audiens yang merasa stuck, tidak berkembang, atau krisis motivasi.
+10. Parenting — untuk audiens yang punya masalah soal pengasuhan anak atau keluarga.
+
+DATA DARI SAYA:
+- Pekerjaan/keseharian saat ini: [Isi pekerjaan atau rutinitasmu. Contoh: Karyawan logistik]
+
+- Target Audiens Saya (Pilih salah satu kondisi di bawah, hapus yang tidak perlu):
+  Kondisi 1 (Punya circle): Orang yang paling sering interaksi dengan saya adalah [Isi. Contoh: Teman kantor]
+  Kondisi 2 (Tidak punya circle): Saya ingin menjangkau [Isi. Contoh: Karyawan UMR]
+
+- Masalah/keluhan paling sering dialami oleh target audiens di atas: [Isi 1-2 keluhan spesifik]
+
+- Niche yang TIDAK ingin saya sentuh: [Boleh dikosongkan. Jika ada, isi maksimal 3]
+
+FORMAT JAWABAN WAJIB (Ikuti persis, tanpa pembukaan atau penutup apapun):
+NICHE PILIHAN: (1 nama niche dari daftar)
+ALASAN: (Maksimal 2 kalimat. WAJIB menyebut target audiens dan masalah spesifik dari data pengguna di atas)`
+            },
+            {
+                id: "bib-4", categoryId: "cat-fase1", type: "prompt", isEditable: true,
+                title: "ProfitHub #04 - Belajar Value Proposition",
+                videoUrl: "https://youtu.be/OobXqngLCIU",
+                rawPrompt: `Saya membantu [TARGET AUDIENS] untuk mencapai [HASIL YANG DIINGINKAN] lewat/tanpa [CARA/MASALAH].
+
+Contoh: "Saya membantu Karyawan UMR punya tabungan sisa 500rb tiap bulan tanpa harus puasa jajan."`
+            },
+            {
+                id: "bib-5", categoryId: "cat-fase1", type: "article",
+                title: "ProfitHub #05 - Peta Jalan Bisnis Online",
+                videoUrl: "https://youtu.be/odbG07wrd9A",
+                content: `<p>Materi ini membahas grand design (peta jalan) langkah demi langkah membangun bisnis online yang solid. Silakan tonton video tutorial di atas untuk memahami fundamentalnya sebelum lanjut ke pembuatan Lead Magnet.</p>`
+            },
+            {
+                id: "bib-6", categoryId: "cat-fase1", type: "prompt", isEditable: false,
+                title: "ProfitHub #06 - Bikin Lead Magnet & Channel Telegram",
+                videoUrl: "https://youtu.be/P2TI0x5vBYk",
+                rawPrompt: `BERTINDAKLAH SEBAGAI:
+Pakar Strategi Produk Digital, Copywriter Tingkat Tinggi, dan AI Automation Expert.
+
+TUGAS UTAMA:
+1. Analisis seluruh file PDF referensi yang telah saya upload.
+2. Sintesis dan peras intisari informasinya menjadi SATU naskah Ebook baru yang tajam, ringkas, dan sangat praktis (Actionable) untuk dijadikan Lead Magnet gratis.
+3. GUNAKAN TOOL PYTHON (CODE INTERPRETER) KAMU UNTUK MENCETAK NASKAH TERSEBUT MENJADI FILE PDF BERSIH YANG SIAP SAYA DOWNLOAD.
+
+ATURAN GAYA BAHASA (MUTLAK):
+- GUNAKAN BAHASA AWAM YANG SANGAT MUDAH DIPAHAMI. Dilarang keras menggunakan istilah medis, akademis, atau jargon teknis yang rumit tanpa memberikan analogi keseharian yang gampang dicerna.
+- Gunakan gaya bahasa percakapan yang asyik, menusuk, dan langsung ke inti masalah (no fluff). Buat pembaca merasa sedang dibimbing langsung oleh mentor yang peduli.
+
+ATURAN MUTLAK ANTI-JEJAK AI:
+- DILARANG KERAS menyertakan tanda kutipan otomatis (seperti citation tags), catatan kaki, atau menyebutkan nama file referensi di dalam naskah maupun PDF. Ebook harus terlihat 100% otentik tulisan manusia.
+
+STRUKTUR KONTEN PDF:
+- JUDUL UTAMA: Buat judul yang memancing penasaran dan menawarkan hasil nyata.
+- BAB 1 (TAMPARAN MASALAH): Bongkar rasa sakit yang dialami pembaca sehari-hari menggunakan bahasa yang sangat "relate" dengan mereka.
+- BAB 2 (SOLUSI PRAKTIS): Berikan 3 langkah nyata yang gampang dieksekusi hari ini juga.
+- BAB 3 (RENCANA AKSI 24 JAM): Berikan instruksi konkret dan penutup yang kuat mengenai apa yang harus dilakukan pembaca dalam 24 jam pertama setelah selesai membaca ebook ini. 
+
+ATURAN RENDER PDF (PYTHON):
+- Render PDF dengan tata letak yang rapi, margin yang lega, tipografi elegan, dan skema warna yang profesional.
+- Pastikan teks mengalir dengan bersih tanpa tambahan elemen tombol, placeholder, atau tautan apa pun. Ini adalah dokumen murni edukasi.
+- Langsung eksekusi pembuatan file PDF-nya. Jangan hanya memberikan teks naskah di kolom chat.
+
+TUGAS KEDUA (GAMBAR COVER):
+Setelah file PDF berhasil dibuat, hasilkan (generate image) satu visual cover ebook minimalis dengan gaya "professional book cover on a desk, high-end lighting, photorealistic."
+
+EKSEKUSI SEKARANG. JANGAN HANYA KASIH TEKS DI CHAT, LANGSUNG RENDER DAN BERIKAN FILE PDF BERSIH UNTUK SAYA DOWNLOAD.`
+            },
+            {
+                id: "bib-7a", categoryId: "cat-fase1", type: "prompt", isEditable: false,
+                title: "ProfitHub #07a - Penentu Harga Produk (Value Ladder)",
+                videoUrl: "https://youtu.be/UzRUUplx7to",
+                rawPrompt: `BERTINDAKLAH SEBAGAI:
+Pakar Strategi Produk Digital (Offer Architect) dan Copywriter Direct-Response.
+
+KONTEKS & TUJUAN:
+Saya telah meng-upload 3 file Ebook (PLR) di niche tertentu. Saya tidak punya waktu untuk membaca semuanya. Tugasmu adalah menganalisis tingkat kedalaman materi dari ketiga ebook tersebut dan menyusunnya menjadi penawaran 3 TINGKAT HARGA (3-Tier Pricing) untuk Landing Page Lynk.id saya.
+
+STRATEGI BUNDLING YANG WAJIB KAMU SUSUN:
+1. ENTRY LEVEL (EL): Pilih 1 ebook yang materinya paling dasar/pemula. Ini adalah produk pancingan murah.
+2. PAKET UTAMA: Gabungan 2 ebook (Ebook EL + 1 ebook tingkat menengah).
+3. PAKET HERO (PENAWARAN UTAMA): Gabungan 3 ebook (Semua ebook) PLUS Bonus Eksklusif "Framework Belajar Cepat". Paket ini harus dirancang sebagai penawaran yang paling tidak bisa ditolak (no-brainer).
+
+KATEGORISASI & ATURAN OUTPUT (WAJIB BERSIH TANPA JEJAK AI):
+Tampilkan analisis dan naskahmu dalam format Markdown yang rapi dan langsung copas:
+
+- NAMA NICHE / TOPIK UTAMA: (Simpulkan topik dari 3 ebook ini dalam 3-5 kata).
+
+- HASIL SORTIR PRODUK:
+  * ENTRY LEVEL: (Sebutkan Judul Ebook yang terpilih, dan berikan 1 kalimat alasan logis kenapa ini cocok untuk pemula).
+  * PAKET UTAMA: (Sebutkan 2 Judul Ebook yang masuk di sini).
+  * PAKET HERO: (Sebutkan 3 Judul Ebook + Bonus "Framework Belajar Cepat").
+
+- REKOMENDASI SKEMA HARGA PSIKOLOGIS:
+  * Harga Entry Level: (Saran harga di kisaran Rp 29.000 - Rp 39.000)
+  * Harga Paket Utama: (Saran harga di kisaran Rp 69.000 - Rp 79.000 sebagai decoy/jebakan)
+  * Harga Paket Hero: (Saran harga di kisaran Rp 89.000 - Rp 99.000 agar terlihat sangat murah dibanding paket utama)
+
+- HEADLINE KHUSUS GAMBAR PRODUK (THUMBNAIL 1:1):
+  Buatkan headline super pendek, tajam, dan memicu konversi untuk dipasang di tengah gambar kotak (1:1) masing-masing produk. WAJIB MAKSIMAL 5-7 KATA PER HEADLINE agar terbaca jelas di layar HP.
+  * Headline EL (1:1): (Fokus pada kata termurah/langkah awal/solusi instan)
+  * Headline Utama (1:1): (Fokus pada paket hemat/duet solusi)
+  * Headline Hero (1:1): (Fokus pada penawaran gila/tambah sedikit dapat semua)`
+            },
+            {
+                id: "bib-7b", categoryId: "cat-fase1", type: "prompt", isEditable: false,
+                title: "ProfitHub #07b - Bikin Copywriting Landing Page",
+                videoUrl: "https://youtu.be/UzRUUplx7to",
+                rawPrompt: `BERTINDAKLAH SEBAGAI:
+Pakar Direct-Response Copywriting dan Arsitek Landing Page Mobile (Lynk.id).
+
+KONTEKS & TUGAS:
+Tuliskan 3 BLOK NASKAH COPYWRITING LANDING PAGE YANG TERPISAH untuk ditaruh di deskripsi Lynk.id berdasarkan 3 tingkatan produk (Entry Level, Utama, dan Hero).
+
+ATURAN MUTLAK (WAJIB BERSIH & TINGGAL COPAS):
+1. DILARANG KERAS MENULISKAN LABEL STRUKTUR! Jangan memunculkan kata-kata seperti "Headline:", "Tamparan Masalah:", "Value Stacking:", "Jebakan Harga:", atau "CTA:". LANGSUNG TULISKAN ISI TEKSNYA SAJA.
+2. Naskah harus sangat pendek, tajam, menggunakan kalimat pendek dan bullet points standar agar gampang dibaca di layar HP.
+3. BAHASA AWAM (LAYMAN TERMS): Gunakan bahasa sehari-hari yang menusuk dan emosional. Dilarang keras meninggalkan jejak sisa kode AI atau tanda kutip.
+
+STRUKTUR ISI NASKAH (TULIS ISINYA SAJA, JANGAN TULIS LABEL ATAU NAMA BAGIANNYA):
+
+1. DESKRIPSI LYNK.ID - ENTRY LEVEL (EL)
+- 1 kalimat pembuka tajam yang mematikan masalah dasar prospek.
+- 1 kalimat pendek tentang kerugian jika menunda.
+- 3 poin singkat manfaat dari 1 ebook dasar ini.
+- Kalimat penutup untuk beli harga termurah (Misal: "Amankan panduan dasar ini sekarang, cuma Rp 29.000!").
+
+2. DESKRIPSI LYNK.ID - PAKET UTAMA
+- 1 kalimat pembuka untuk penawaran solusi ganda.
+- Sebutkan benefit dari 2 ebook ini, sebutkan bahwa nilai aslinya setara Rp 500.000, lalu berikan harga promo paket utama (Rp 79.000).
+- Kalimat penutup untuk segera beli.
+
+3. DESKRIPSI LYNK.ID - PAKET HERO (PENAWARAN UTAMA)
+- 1 kalimat pembuka ekstrem yang menjanjikan penguasaan total dari masalah mereka.
+- Daftarkan 3 Ebook + Bonus Eksklusif "Framework Belajar Cepat" beserta 1 baris keunggulan masing-masing.
+- TULISKAN PARAGRAF PENAWARAN INI SECARA NATURAL (Tanpa merujuk ke halaman produk lain):
+  "Normalnya, untuk mendapatkan 2 modul utama saja Anda harus berinvestasi sebesar Rp 79.000. Tapi khusus di halaman ini, cukup dengan Rp 89.000 Anda langsung membawa pulang KETIGA blueprint premium tersebut PLUS Bonus Eksklusif! Cuma selisih Rp 10.000 perak, Anda mendapatkan akses ke seluruh ilmunya tanpa ada yang terlewat."
+- Kalimat perintah penutup yang mendesak untuk klik tombol beli sekarang.
+
+(Tambahan: Untuk gambar produk, pastikan ada Teks Profesional yang sangat kontras dengan latar belakang, sehingga teks terbaca jelas tapi ga terkesan murahan).`
+            },
+            {
+                id: "bib-8", categoryId: "cat-fase1", type: "prompt", isEditable: false,
+                title: "ProfitHub #08 - Cara Bikin Banner Promosi Pake AI",
+                videoUrl: "https://youtu.be/TjH_RoqbhYg",
+                rawPrompt: `BERTINDAKLAH SEBAGAI:
+Pakar Strategi Produk Digital, Copywriter Tingkat Tinggi, dan Desainer Visual Direct-Response.
+
+TUGAS ANDA (DUA LANGKAH TERINTEGRASI):
+
+LANGKAH 1: EKSTRAKSI & SINTESIS (Wajib Dilakukan di Latar Belakang)
+Analisis file Lead Magnet yang saya unggah. Identifikasi JUDUL ASLI dan setidaknya 3 NILAI (VALUE/BENEFIT) utama yang mematikan dari isinya.
+
+LANGKAH 2: GENERATE GAMBAR BANNER (WAJIB MENGGUNAKAN HASIL LANGKAH 1)
+Berdasarkan hasil Langkah 1, buat satu gambar banner promosi profesional rasio 16:9 untuk menarik prospek organik.
+
+INSTRUKSI VISUAL UTAMA (SINGLE OBJECT & CTA DINAMIS MUTLAK):
+1. ATURAN SINGLE HERO OBJECT (FOKUS TUNGGAL): PILIH HANYA SATU wujud visualisasi Lead Magnet sebagai obyek utama. Tampilkan HANYA SATU buku fisik premium SAJA, ATAU HANYA SATU tablet premium SAJA. DILARANG KERAS memunculkan dua wujud obyek sekaligus agar gambar memiliki satu titik fokus absolut yang tajam.
+2. GAYA VISUAL: Fotorealistik, studio cinematic lighting, resolusi tajam, dengan latar belakang estetik minimalis yang tidak menyaingi fokus obyek utama.
+3. TEKS JUDUL ASLI: Wujud obyek tunggal tersebut WAJIB menampilkan JUDUL ASLI dari file secara jelas, kontras, dan terbaca nyata.
+4. PANEL VALUE (3 POIN BENEFIT): Di area ruang kosong di samping obyek, tampilkan 3 BULLET POINTS pendek berisi 3 NILAI UTAMA (VALUE) hasil ekstraksi Langkah 1 dengan diksi yang emosional.
+5. CTA VISUAL DINAMIS (MENGARAH KE BAWAH):
+   - DILARANG menuliskan teks instruksi kaku seperti "KLIK DISINI" atau "MEMULAI".
+   - Sematkan tombol elegan bertuliskan "FREE DOWNLOAD" atau lencana "GRATIS" yang langsung dipadukan dengan elemen visual dinamis (seperti ikon panah mencolok yang mengarah ke BAWAH) untuk menggiring mata prospek menuju deskripsi/bio.`
+            },
+
+            // --- FASE 2: PRODUKSI KONTEN ---
+            {
+                id: "bib-9", categoryId: "cat-fase2", type: "prompt", isEditable: true,
+                title: "ProfitHub #09 - Tahap Awal Membangun Personal Branding",
+                videoUrl: "https://youtu.be/cYrMhsKCVoc",
+                rawPrompt: `BERTINDAKLAH SEBAGAI:
+Brand Strategist Tingkat Tinggi dan Pakar Positioning Personal Branding.
+
+KONTEKS & TUJUAN:
+Saya adalah eksekutor produk digital yang ingin membangun personal branding yang kuat, otentik, dan tidak pasaran. Saya tidak mau terlihat seperti "fake guru". Tugasmu adalah menganalisis 3 data diri saya di bawah ini, lalu merumuskan Persona Bisnis yang paling cocok, tajam, dan langsung menonjol di market.
+
+DATA DIRI SAYA (PROMPT INPUT):
+1. Niche / Topik Produk yang Saya Jual: [ISI NICHE DI SINI]
+2. Latar Belakang Asli Saya Saat Ini: [ISI LATAR BELAKANG ASLI ANDA DI SINI]
+3. Gaya Komunikasi & Sifat Asli Saya: [ISI GAYA KOMUNIKASI DI SINI]
+
+FORMAT OUTPUT YANG WAJIB KAMU BERIKAN (RINGKAS & TAJAM):
+Berdasarkan data di atas, berikan rumusan personal branding saya dengan struktur berikut:
+
+1. GELAR PERSONA (PENGGANTI STATUS UTAMA):
+   Berikan 3 opsi julukan singkat (maksimal 2-3 kata) yang otentik dan menggambarkan otoritas saya tanpa berlebihan.
+
+2. BIO POSITIONING STATEMENT (ELEVATOR PITCH):
+Buatkan 1 kalimat tajam untuk ditaruh di Bio IG/TikTok saya yang menjelaskan SIAPA saya dan APA solusi yang saya bawa.
+
+3. ATURAN KONTEN (DO'S & DON'TS):
+   - DO'S (Lakukan): 2 hal yang wajib saya tunjukkan di konten agar sesuai dengan persona asli saya.
+   - DON'TS (Hindari): 2 gaya/bahasa yang wajib saya hindari agar tidak merusak otentisitas branding saya.`
+            },
+            {
+                id: "bib-10", categoryId: "cat-fase2", type: "prompt", isEditable: true,
+                title: "ProfitHub #10 - Strategi Funneling & Follow Up WA/Tele",
+                videoUrl: "https://youtu.be/3yFDCAs0kVk",
+                rawPrompt: `TEMPLATE LINK PESAN OTOMATIS (Ubah link ini untuk WA Anda):
+https://wa.me/628?text=Halo%20kak%20[Nama]%0ANama%20saya%20[Tulis%20nama%20kamu]%0ASaya%20mau%20e-Book%20Gratisnya%20kak.%20🙏
+
+TEMPLATE SALAM WA BUSINESS (Pilih Salah Satu):
+
+Opsi 1:
+Halo Kak, terima kasih sudah menghubungi kami! 👋
+Sesuai janji, ini dia akses untuk mengunduh E-book GRATIS Kakak.
+Silakan klik tautan di bawah ini untuk mulai membaca:
+📥 [Link Ebook Gratis]
+
+Ingin melangkah lebih jauh? 🚀
+Jika Kakak serius ingin mendalami potensi luar biasa dari [Niche].
+Pelajari dan miliki e-book premiumnya di sini:
+👉 [Link Produk Hero]
+Selamat belajar dan salam sukses!
+
+Opsi 2:
+Halo Kak, selamat datang! 😊
+Silakan unduh E-book GRATIS Kakak melalui tautan berikut:
+🎁 [Link Ebook Gratis]
+
+Tunggu, jangan berhenti sampai di sini!
+Untuk Kakak yang ingin tahu seputar [Niche] dari nol, Kakak wajib memiliki panduan lengkap ini.
+💡 [Link produk hero]
+Yuk, mulai bangun langkah sukses Kakak sekarang!
+
+--- ESOK HARINYA (FOLLOW UP TELEGRAM) ---
+
+Opsi 1 (H+1):
+Halo Kak! Semoga e-book gratisnya bermanfaat ya! 📚
+Kami sadar, untuk benar-benar menguasai [Niche], membaca satu buku saja tentu belum cukup.
+Karena itu, kami mengundang Kakak untuk bergabung ke Channel Telegram Eksklusif kami.
+Aksesnya 100% GRATIS! Yuk kumpul bareng teman-teman lainnya di sini:
+👉 [Masukkan Link Telegram Anda di sini]
+
+Opsi 2 (H+1):
+Halo Kak, tahukah Kakak? Rahasia sukses di bidang [Niche] adalah memiliki akses informasi yang cepat dan tepat.
+Jangan sampai tertinggal strategi terbarunya. Bergabunglah bersama ratusan orang lainnya di Channel Telegram VIP kami.
+Klik tautan di bawah ini untuk langsung bergabung sekarang juga:
+📲 [Masukkan Link Telegram Anda di sini]`
+            },
+            {
+                id: "bib-11", categoryId: "cat-fase2", type: "article",
+                title: "ProfitHub #11 - Membahas Fundamental Konten",
+                videoUrl: "https://youtu.be/Un_aG6gHqZw",
+                content: `<p>Sebelum membuat konten secara membabi buta, Anda perlu memahami fundamental anatomi konten yang disukai algoritma saat ini. Silakan simak video di atas untuk menguasai fundamentalnya.</p>`
+            },
+            {
+                id: "bib-12a", categoryId: "cat-fase2", type: "prompt", isEditable: true,
+                title: "ProfitHub #12a - Ide Konten Tanpa Batas (Via Link Referensi)",
+                videoUrl: "https://youtu.be/pPufP43Avic",
+                rawPrompt: `Peran:
+Bertindaklah sebagai seorang Social Media Strategist dan Content Creator profesional yang ahli dalam membedah sebuah artikel atau sumber informasi menjadi puluhan ide konten yang viral dan engaging.
+
+Tugas:
+Buatkan ide konten sebanyak, sekreatif, dan sedetail mungkin berdasarkan informasi dari tautan yang saya berikan di bawah.
+
+ATURAN KETAT DAN MUTLAK (HARUS DIPATUHI):
+Kamu HANYA BOLEH menggunakan informasi, data, fakta, dan konteks yang terdapat HANYA di dalam tautan ini: [MASUKKAN LINK REFERENSI KAMU DI SINI]
+
+DILARANG KERAS berhalusinasi, menebak-nebak, menambahkan pengetahuan umummu sendiri, atau mengambil informasi dari luar tautan tersebut. Jika informasinya tidak ada di link, jangan dibuat-buat.
+
+Format Output yang Diharapkan:
+Kelompokkan (batch) ide-ide konten tersebut ke dalam 4 kategori format berikut. Untuk setiap ide di masing-masing kategori, berikan detail berupa: Judul Konten, Hook (Kalimat Pancingan Utama), Ringkasan Isi/Alur, dan Call to Action (CTA).
+
+Kategori konten yang harus dibuat:
+1. Video Pendek (TikTok, IG Reels, YouTube Shorts) - Fokus: Tempo cepat, hook 3 detik pertama.
+2. Video Panjang (YouTube) - Fokus: Pembahasan mendalam (in-depth), storytelling.
+3. Carousel Instagram (Feed Slide) - Fokus: Desain informasi step-by-step, poin yang dibaca.
+4. Utas Teks (X / Threads) - Fokus: Teks naratif memancing rasa penasaran.`
+            },
+            {
+                id: "bib-12b", categoryId: "cat-fase2", type: "prompt", isEditable: false,
+                title: "ProfitHub #12b - Ide Konten Tanpa Batas (Via File Ebook)",
+                videoUrl: "https://youtu.be/pPufP43Avic",
+                rawPrompt: `Peran:
+Bertindaklah sebagai seorang Social Media Strategist dan Content Creator profesional yang ahli dalam membedah sebuah buku/dokumen tebal menjadi puluhan ide konten yang viral, edukatif, dan engaging.
+
+Tugas:
+Saya telah melampirkan/mengunggah sebuah dokumen e-book pada prompt ini. Tugasmu adalah membaca, menganalisis, dan mengekstrak poin-poin utama, wawasan (insight) terbaik, serta fakta menarik dari dokumen tersebut untuk diubah menjadi ide konten media sosial.
+
+ATURAN KETAT DAN MUTLAK (HARUS DIPATUHI):
+Kamu HANYA BOLEH menggunakan informasi, teori, data, fakta, dan konteks yang terdapat HANYA di dalam dokumen e-book yang saya unggah ini.
+DILARANG KERAS berhalusinasi, menambahkan pengetahuan umummu sendiri, atau mengambil informasi dari luar e-book ini. 
+Ekstrak bagian-bagian yang paling "menjual" dari e-book ini, seperti: kutipan (quotes) yang kuat, langkah-langkah praktis (how-to), atau mitos yang dipatahkan di dalam buku.
+
+Format Output yang Diharapkan:
+Kelompokkan ide konten ke dalam 4 kategori (Video Pendek, Video Panjang, Carousel Instagram, Utas Teks) beserta Judul, Hook, Ringkasan, dan CTA.`
+            },
+            {
+                id: "bib-13", categoryId: "cat-fase2", type: "article",
+                title: "ProfitHub #13 - Memahami Struktur Skrip Konten",
+                videoUrl: "https://youtu.be/z_2_u0GvsfI",
+                content: `<p>Materi video kali ini membedah anatomi skrip yang membuat audiens betah menonton sampai habis tanpa di-skip. Wajib ditonton sebelum menggunakan prompt skrip konten otomatis.</p>`
+            },
+            {
+                id: "bib-14", categoryId: "cat-fase2", type: "prompt", isEditable: true,
+                title: "ProfitHub #14 - Mesin Bikin Hook Mematikan",
+                videoUrl: "https://youtu.be/ev6BxEow_YA",
+                rawPrompt: `PERAN:
+Kamu copywriter hook video pendek kelas dunia untuk konten [Niche kamu] yang akurat sekaligus menghentikan scroll. Kamu tidak memakai fearbait murahan atau klaim palsu, karena platform menekan konten itu dan jangkauannya mati, justru lawan dari tujuan.
+
+KONTEKS:
+Topik: [Topik konten dari ide sebelumnya]
+Target penonton: [Siapa targetnya]
+Platform: [TikTok / Reels / Shorts]
+Bahasa dan gaya: [Santai / Formal / Sarkas dll]
+Tujuan utama hook: [Durasi tonton / save / share / follow / konversi]
+
+DEFINISI HOOK TERKUAT:
+Menghentikan scroll dalam 2 detik, melebur tiga unsur dalam satu kalimat yang bisa diucapkan dalam 3 detik, dan relevan langsung dengan ketakutan atau keinginan target.
+
+POLA WAJIB SETIAP HOOK: PUKUL lalu JANJI lalu TAHAN, satu kalimat maksimal 12 kata.
+PUKUL: kata pertama bermuatan, hanya boleh angka, kata beremosi, atau sapaan langsung. Dilarang mutlak diawali kata sambung. Posisi PUKUL terkunci di depan.
+JANJI: nilai atau alasan kenapa penting, padat.
+TAHAN: kunci yang disembunyikan supaya harus ditonton.
+Urutan JANJI dan TAHAN ditentukan tujuan, bukan acak: Durasi tonton (TAHAN memimpin); save (JANJI memimpin); konversi (sapaan spesifik memimpin); follow (otoritas memimpin); share (callout memimpin).
+
+LANGKAH:
+Hasilkan 32 hook, dibagi rata ke 8 sudut psikologis yang beda mekanismenya. Semua wajib patuh pola wajib.
+Skor semua dengan rubrik (muatan, kepadatan, jurang penasaran, kesesuaian, relevansi target). Tampilkan 5 skor tertinggi beserta tabel skor per dimensi.
+Kritik 5 itu sebagai tiga juri bermusuhan berurutan. Tulis ulang tiap dari 5 hook khusus menambal dimensi terendah, lalu skor ulang.
+
+OUTPUT:
+Bagian 1: 5 hook terpilih dan tabel skor.
+Bagian 2: kritik tiga juri.
+Bagian 3: 5 hook final, skor ulang, dan selisih kenaikan.`
+            },
+            {
+                id: "bib-15", categoryId: "cat-fase2", type: "prompt", isEditable: true,
+                title: "ProfitHub #15 - Bikin Tulisan Natural Pake AI (Body & CTA)",
+                videoUrl: "https://youtu.be/tu0kTQDoW84",
+                rawPrompt: `PERAN:
+Kamu copywriter video pendek kelas dunia. Kamu menulis body dan CTA yang menebus janji hook dengan tuntas, padat, dan memicu aksi spesifik. Kamu menolak filler, fearbait, dan klaim palsu. Niche bebas, karena seluruh konteks kamu turunkan dari hook dan input.
+
+INPUT:
+Hook (wajib): [Tempel 1 hook final yang sudah dipilih]
+Tujuan video (wajib): [Durasi tonton / save / share / follow / konversi]
+Target penonton (opsional): [Target Penonton]
+Platform (opsional, default TikTok): [Platform]
+Bahasa dan gaya (opsional, default Indonesia santai): [Gaya Bahasa]
+Durasi target (opsional): [30 sampai 45 detik]
+
+PROTOKOL ADAPTASI:
+Sebelum menulis, ekstrak dari hook tiga hal: topik inti, janji yang dibuat hook, dan elemen yang ditahan. Tampilkan tiga ekstraksi ini di awal output. 
+
+LIMA PRINSIP BODY YANG WAJIB DIPENUHI:
+Satu, kontrak hook-body: body menebus janji hook secara eksplisit.
+Dua, kepadatan dan tempo: kalimat pendek, tanpa "jadi", "intinya", "sebelum saya jelaskan".
+Tiga, loop penasaran di tengah body: tanam mini-tease yang menahan penonton.
+Empat, pemicu CTA ditanam di 60 sampai 70% durasi.
+Lima, ending: pilih keras berupa CTA spesifik atau loop-back ke hook.
+
+TIGA PRINSIP CTA YANG WAJIB DIPENUHI:
+Satu, spesifik dan tidak bertele-tele (maksimal 7 kata).
+Dua, harus ada alasan (kenapa penonton harus klik).
+Tiga, dua kanal sekaligus (diucapkan + teks on-screen).
+
+OUTPUT:
+Bagian 1: Ekstraksi hook & scaffolding terpilih.
+Bagian 2: Skrip body lengkap (dengan notasi PEMICU CTA).
+Bagian 3: Ending.
+Bagian 4: CTA final.
+Bagian 5: Self-audit 5 prinsip.`
+            },
+            {
+                id: "bib-16", categoryId: "cat-fase2", type: "article",
+                title: "ProfitHub #16 - Mengenal 3 Format Skrip",
+                videoUrl: "https://youtu.be/ZIzg78joMDY",
+                content: `<p>Pelajari 3 gaya format pembawaan skrip utama: Talking Head, Vlog, dan Voice Over. Video ini akan memandu Anda memilih gaya yang paling sesuai dengan persona Anda.</p>`
+            },
+            {
+                id: "bib-17", categoryId: "cat-fase2", type: "article",
+                title: "ProfitHub #17 - Faceless atau On Cam?",
+                videoUrl: "https://youtu.be/TTAzP7Ol_bk",
+                content: `<p>Banyak yang bingung apakah harus tampil wajah atau tidak. Video ini membedah plus minus kedua strategi tersebut dalam hal retensi, cuan, dan proses eksekusi.</p>`
+            },
+            {
+                id: "bib-18", categoryId: "cat-fase2", type: "article",
+                title: "ProfitHub #18 - Ubah Skrip Jadi Suara AI",
+                videoUrl: "https://youtu.be/L4yZOjV6Wuo",
+                content: `<p>Tutorial teknis mengubah teks skrip menjadi Voice Over AI yang terdengar natural dan tidak kaku (khusus untuk konten Faceless).</p>`
+            },
+            {
+                id: "bib-19", categoryId: "cat-fase2", type: "article",
+                title: "ProfitHub #19 - Hack Capcut PRO Murah",
+                videoUrl: "https://youtu.be/MiZYuBm1Nv0",
+                content: `<p>Video singkat mengenai trik legal berlangganan Capcut PRO dengan harga yang sangat didiskon setiap bulannya.</p>`
+            },
+            {
+                id: "bib-20a", categoryId: "cat-fase2", type: "prompt", isEditable: true,
+                title: "ProfitHub #20a - Sutradara Visual (Footage Original)",
+                videoUrl: "https://youtu.be/1d9Qq6XUAz8",
+                rawPrompt: `PERAN:
+Kamu sutradara visual dan storyboard artist untuk konten video pendek faceless. Tugasmu mengubah skrip menjadi daftar shot konkret yang bisa direkam sendiri pakai HP dan alat seadanya, tanpa wajah. Setiap shot tidak hanya mewakili MAKNA potongan skrip, tapi juga MEMPERKUAT EMOSI yang dikandung potongan itu.
+
+INPUT:
+Skrip (wajib): [TEMPEL SKRIP LENGKAP DI SINI]
+Alat tersedia (opsional, default HP): [Alat yang dimiliki]
+Lokasi (opsional): [Lokasi syuting]
+Vibe visual keseluruhan: [Vibe yang diinginkan]
+
+PRINSIP SEGMENTASI:
+Pecah skrip jadi segmen setara kurang lebih 3 detik bicara (7-12 kata). Potong di batas makna alami. Satu segmen = satu shot.
+
+PRINSIP EMOSI:
+Untuk tiap segmen, lakukan tiga langkah:
+1. Tentukan EMOSI dominan (tegang, kaget, lega, serius).
+2. Pilih shot yang mewakili makna kalimat.
+3. Tentukan EKSEKUSI EMOSIONAL (Lighting, Sudut, Gerakan, Jarak).
+
+PRINSIP SHOT FACELESS:
+Setiap shot tanpa wajah. Pilih dari: close-up tangan, screen recording, teks on-screen, POV, B-roll lingkungan, metafora visual.
+
+OUTPUT (format blok per segmen, BUKAN tabel):
+SEGMEN [nomor] ([detik mulai]–[detik selesai])
+Skrip: "[potongan skrip]"
+Emosi: [emosi dominan]
+Shot: [objek/aksi]
+Eksekusi: [sudut, gerakan, lighting, jarak]
+Catatan: [teks on-screen jika ada]`
+            },
+            {
+                id: "bib-20b", categoryId: "cat-fase2", type: "prompt", isEditable: true,
+                title: "ProfitHub #20b - Pencari Kata Kunci (Stock Footage Web)",
+                videoUrl: "https://youtu.be/1d9Qq6XUAz8",
+                rawPrompt: `INPUT:
+Skrip (wajib): [TEMPEL SKRIP LENGKAP DI SINI]
+Bahasa kata kunci: Inggris.
+
+PRINSIP SEGMENTASI:
+Pecah skrip jadi segmen setara kurang lebih 3 detik bicara, 7 sampai 12 kata. Satu segmen, satu klip.
+
+PRINSIP EMOSI & KATA KUNCI:
+Tentukan emosi tiap segmen, lalu beri kata kunci utama (paling spesifik) plus 2 sampai 3 alternatif. Sediakan versi Inggris (prioritas) dan Indonesia. Untuk konsep abstrak, ubah jadi metafora visual (contoh: "waktu habis" jadi "hourglass", "ticking clock"). Kata kunci wajib berupa benda, aksi, atau suasana, bukan kalimat abstrak.
+
+ATURAN SELEKSI:
+Cari kriteria vertikal 9:16. Variasi antar klip. Cocokkan klip dengan emosi segmennya.
+
+OUTPUT (blok per segmen, dilarang tabel):
+SEGMEN [nomor]
+Skrip: "[potongan persisnya]"
+Emosi: [emosi dominan]
+Kata kunci utama (EN): [...]
+Kata kunci utama (ID): [...]
+Alternatif: [2-3 kata kunci cadangan]
+Kriteria klip: [apa yang dicari supaya cocok emosi]
+Catatan: [teks on-screen]`
+            },
+            {
+                id: "bib-20c", categoryId: "cat-fase2", type: "prompt", isEditable: true,
+                title: "ProfitHub #20c - Prompt AI Video Generator (Sora/Runway)",
+                videoUrl: "https://youtu.be/1d9Qq6XUAz8",
+                rawPrompt: `PERAN:
+Kamu prompt engineer untuk model text-to-video kelas dunia (Sora, Runway, Kling, Veo). Tugasmu mengubah skrip menjadi prompt video AI per segmen, lengkap dan siap tempel, sehingga tiap klip mewakili makna sekaligus memperkuat emosi segmen.
+
+INPUT:
+Skrip (wajib): [TEMPEL SKRIP LENGKAP DI SINI]
+Vibe atau style visual: [Cinematic/Realistic/Anime dll]
+Wajah atau faceless: [Faceless / Ada Karakter]
+
+PRINSIP EMOSI:
+Emosi dikendalikan langsung lewat kata di prompt. Tanam pengendalinya: lighting, gerakan kamera, mood words, warna.
+
+ANATOMI PROMPT VIDEO AI:
+Tiap prompt wajib mengandung: subjek + aksi, setting, shot type + sudut + gerakan, lighting + mood, dan style. Tulis dalam bahasa Inggris (karena model AI lebih paham Inggris), sertai arti Indonesia. Jangan minta AI membuat teks spesifik di video.
+
+OUTPUT (blok per segmen, dilarang tabel):
+SEGMEN [nomor]
+Skrip: "[potongan persisnya]"
+Emosi: [emosi dominan]
+Prompt (EN): [prompt lengkap siap tempel]
+Arti singkat (ID): [...]
+Catatan: [aspect ratio, keterbatasan]`
+            },
+            {
+                id: "bib-21", categoryId: "cat-fase2", type: "article",
+                title: "ProfitHub #21-23 - Panduan Editing Konten",
+                videoUrl: "https://youtu.be/8Yqlc9UZ5zc",
+                content: `<p>Materi teknis pasca-produksi:
+                <br>• ProfitHub 21: Cara Editing Konten Faceless (https://youtu.be/8Yqlc9UZ5zc)
+                <br>• ProfitHub 22: Bikin Video Tampil Wajah (https://youtu.be/wKiQv5-3_bU)
+                <br>• ProfitHub 23: Editing untuk On Cam (https://youtu.be/tUlE4x4-pU4)</p>`
+            },
+
+            // --- FASE 3: DISTRIBUSI ---
+            {
+                id: "bib-24-25", categoryId: "cat-fase3", type: "article",
+                title: "ProfitHub #24 & #25 - Mindset & Strategi Distribusi",
+                videoUrl: "https://youtu.be/TvZAnRMo7Xk",
+                content: `<p>Sebelum menyebarkan konten, penting untuk menyelaraskan Mindset (ProfitHub 24) dan Strategi Distribusi Pemula (ProfitHub 25). Tonton videonya untuk memahami cara kerja algoritma dalam menyebarkan konten Anda (https://youtu.be/9XusNtUPfx4).</p>`
+            },
+            {
+                id: "bib-26", categoryId: "cat-fase3", type: "prompt", isEditable: false,
+                title: "ProfitHub #26 - Bikin Caption & Hashtag Relevan",
+                videoUrl: "https://youtu.be/u24LEQ_44i0",
+                rawPrompt: `Tolong analisis video yang saya unggah ini dan buatkan caption serta hashtag yang paling relevan untuk diposting di media sosial.
+
+Ikuti aturan mutlak berikut ini:
+
+1. Buatkan tepat 3 opsi caption yang menarik dan sesuai dengan isi, suasana, serta pesan di dalam video.
+2. Buatkan tepat 3 hashtag yang relevan di bagian akhir.
+3. Tampilkan hasilnya secara langsung. Dilarang memberikan teks sapaan, kalimat pembuka, penjelasan, atau kalimat penutup apa pun. Saya hanya membutuhkan hasil akhirnya saja agar bisa langsung di-copy.`
+            },
+            {
+                id: "bib-27a", categoryId: "cat-fase3", type: "prompt", isEditable: false,
+                title: "ProfitHub #27a - Komentar Cerdas di Video Kompetitor",
+                videoUrl: "https://youtu.be/0eqCuIwRTjY",
+                rawPrompt: `Analisis video yang saya unggah ini dan buatkan komentar yang relevan untuk saya tulis di postingan video tersebut.
+
+Ikuti aturan mutlak berikut ini:
+1. Buatkan tepat 3 opsi komentar yang berbeda untuk saya pilih.
+2. Pastikan setiap komentar ditulis secara ringkas (maksimal 1-2 kalimat).
+3. Buat nada komentar cenderung mengarah pada kritik yang masuk akal, objektif, atau saran membangun terkait isi, eksekusi, atau pesan di dalam video.
+4. Tampilkan hasilnya secara langsung. Dilarang memberikan teks sapaan, kalimat pembuka, penjelasan, atau kalimat penutup apa pun.`
+            },
+            {
+                id: "bib-27b", categoryId: "cat-fase3", type: "prompt", isEditable: false,
+                title: "ProfitHub #27b - Balas Pertanyaan Audiens di Akun Kompetitor",
+                videoUrl: "https://youtu.be/0eqCuIwRTjY",
+                rawPrompt: `Baca dan analisis teks pada screenshot komentar yang saya unggah ini. Komentar ini berasal dari audiens di video kompetitor yang sedang bertanya atau menghadapi suatu masalah.
+
+Tugasmu adalah membuatkan balasan komentar untuk saya kirim ke audiens tersebut. Ikuti aturan mutlak berikut:
+1. Identifikasi apa masalah atau pertanyaan utama dari audiens tersebut.
+2. Buatkan tepat 3 opsi balasan komentar yang berfokus memberikan solusi praktis, jawaban yang jelas, atau pencerahan yang sangat membantu atas masalah mereka.
+3. Gunakan gaya bahasa yang kasual, natural, ramah, dan empatik.
+4. Dilarang keras membuat kalimat yang terkesan "hard selling" atau terang-terangan berpromosi. Fokus murni pada memberikan nilai/solusi agar saya terlihat seperti ahli yang peduli.
+5. Tampilkan hasilnya secara langsung.`
+            },
+            {
+                id: "bib-27c", categoryId: "cat-fase3", type: "prompt", isEditable: true,
+                title: "ProfitHub #27c - Bikin Utas (Thread) Organik",
+                videoUrl: "https://youtu.be/0eqCuIwRTjY",
+                rawPrompt: `Buatkan sebuah utas (thread) media sosial yang sangat menarik dan relevan dengan topik/niche berikut: [TULIS NICHE/TOPIK KAMU DI SINI].
+
+Buat utas ini dengan gaya bahasa: [Edukasi / Sarkas / Informasi].
+
+Ikuti aturan mutlak berikut ini:
+1. Utas harus terdiri dari 4 hingga 7 bagian (posts).
+2. Post pertama (1/) harus berupa hook yang sangat kuat, memancing rasa penasaran (scroll-stopping).
+3. Sesuaikan dengan gaya bahasa yang dipilih (Edukasi = actionable, Sarkas = cerdas/menohok, Informasi = fakta padat).
+4. Pastikan setiap post ringkas (cocok untuk batas karakter Threads/X) dan memiliki transisi yang mengalir logis.
+5. Gunakan format penomoran di awal setiap post (1/, 2/, 3/, dst.).
+6. Tampilkan hasilnya secara langsung tanpa basa-basi pembuka.`
+            },
+            {
+                id: "bib-27d", categoryId: "cat-fase3", type: "prompt", isEditable: false,
+                title: "ProfitHub #27d - Komen Utas Orang Lain (Peer-to-Peer)",
+                videoUrl: "https://youtu.be/0eqCuIwRTjY",
+                rawPrompt: `Baca dan analisis teks/screenshot utas (thread) yang saya berikan ini. Utas ini dibuat oleh kreator lain yang satu niche atau industri dengan saya.
+
+Tugasmu adalah membuatkan komentar untuk saya balas di utas tersebut agar saya terlihat sebagai rekan industri yang suportif dan memiliki wawasan luas. Ikuti aturan mutlak berikut:
+
+1. Buatkan tepat 3 opsi komentar dengan pendekatan yang berbeda:
+Opsi 1 (Menambahkan Nilai): Menyetujui poin pembuat utas dan menambahkan 1 insight ekstra yang relevan.
+Opsi 2 (Relatable/Validasi): Memberikan validasi berdasarkan "pengalaman pribadi" di lapangan.
+Opsi 3 (Memancing Diskusi): Menyetujui poinnya dan ditutup dengan pertanyaan lanjutan yang cerdas.
+
+2. Gunakan gaya bahasa yang kasual, profesional, namun tetap akrab sesama kreator (peer-to-peer).
+3. Pastikan setiap opsi komentar ringkas (maksimal 2-3 kalimat).
+4. Dilarang keras berpromosi, meninggalkan tautan (link), atau mencoba membajak audiens (hijacking).
+5. Tampilkan hasilnya secara langsung siap copy.`
+            },
+            {
+                id: "bib-28-29", categoryId: "cat-fase3", type: "article",
+                title: "ProfitHub #28 & #29 - Edukasi Traffic & Kepercayaan",
+                videoUrl: "https://youtu.be/mFX-gnJdJxg",
+                content: `<p>Materi tentang cara mengubah Traffic menjadi Audiens (ProfitHub 28) dan cara membuat Audiens percaya kepada kita (ProfitHub 29 - https://youtu.be/tJG90jObg4k). Wajib ditonton untuk fundamental funnel.</p>`
+            },
+            {
+                id: "bib-30a", categoryId: "cat-fase3", type: "prompt", isEditable: true,
+                title: "ProfitHub #30a - Bikin Struktur Edukasi Telegram (30 Hari)",
+                videoUrl: "https://youtu.be/_ufdg41rlC8",
+                rawPrompt: `Bertindaklah sebagai Content Strategist dan Copywriter Telegram profesional. Saya ingin membuat rencana konten berseri selama 30 hari berturut-turut untuk channel Telegram saya.
+
+Niche saya adalah: [ISI NICHE BISNIS ANDA].
+Target audiens saya: [SIAPA TARGET AUDIENS ANDA].
+Tujuan akhir audiens setelah 30 hari: [GOAL AKHIR YANG DIHARAPKAN].
+
+Tolong buatkan kalender konten 30 hari yang materinya saling berkesinambungan. Alurnya harus logis: mulai dari pengenalan/mindset di minggu pertama, masuk ke teknis/strategi di minggu kedua dan ketiga, lalu studi kasus/praktik langsung di minggu keempat.
+
+Tolong sajikan dalam bentuk daftar terstruktur (bukan tabel) yang mudah dibaca di layar HP. Gunakan format seperti ini untuk setiap hari:
+📅 Hari ke-[Nomor]: [Tema Utama]
+Hook: [Hook/Judul Pesan]
+Isi: [Poin Edukasi 1]; [Poin Edukasi 2]
+Tindakan: [CTA/Interaksi]
+Teaser: [Kalimat teaser untuk hari berikutnya]
+
+Pastikan transisi antar hari terasa natural, misalnya di akhir pesan hari pertama ada kalimat 'teaser' untuk materi hari kedua.`
+            },
+            {
+                id: "bib-30b", categoryId: "cat-fase3", type: "prompt", isEditable: true,
+                title: "ProfitHub #30b - Ubah Struktur Edukasi Harian Jadi Skrip Video",
+                videoUrl: "https://youtu.be/_ufdg41rlC8",
+                rawPrompt: `Bertindaklah sebagai Video Scriptwriter viral khusus untuk TikTok, Instagram Reels, dan YouTube Shorts. Saya ingin mengubah materi tulisan Telegram harian saya menjadi naskah video lisan berdurasi pas 1 menit.
+
+Berikut adalah materi dasar untuk naskah hari ini:
+[COPY-PASTE MATERI SATU HARI DARI TELEGRAM DI SINI]
+
+Tugas Anda adalah mengadaptasi materi tersebut menjadi naskah dengan aturan main berikut:
+Batas Kata: Naskah lisan maksimal berisi 130-150 kata agar pas di durasi 1 menit dengan tempo bicara santai.
+Gaya Bahasa (PENTING): Buat senatural mungkin, seperti orang yang sedang curhat atau sharing jujur ke teman sendiri. Gunakan bahasa lisan sehari-hari yang luwes, authentic, dan langsung to the point. 
+
+Struktur Alami:
+Hook: Kalimat pertama harus langsung menembak masalah penonton atau memancing penasaran tanpa terdengar seperti iklan.
+Isi: Sampaikan inti edukasi secara padat.
+CTA: Gabungkan tindakan dan teaser di akhir dengan nada mengajak ngobrol biasa (misalnya: "Coba deh kalian tulis di komen...").
+
+FORMAT HASIL AKHIR:
+JANGAN gunakan tabel. JANGAN pisahkan visual dan audio. Berikan teks paragraf utuh yang mengalir dari awal sampai akhir, hanya kata-kata yang harus saya bacakan langsung di depan kamera.`
+            },
+            {
+                id: "bib-30c", categoryId: "cat-fase3", type: "prompt", isEditable: true,
+                title: "ProfitHub #30c - Ubah Struktur Edukasi Jadi Gambar (IG/Canva)",
+                videoUrl: "https://youtu.be/_ufdg41rlC8",
+                rawPrompt: `Bertindaklah sebagai Copywriter Konten Visual. Saya ingin mengubah materi teks Telegram harian saya menjadi konten format gambar tunggal (single post) untuk diunggah ke media sosial.
+
+Berikut adalah materi dasarnya:
+[COPY-PASTE MATERI SATU HARI DARI TELEGRAM DI SINI]
+
+Tugas Anda adalah merangkum materi tersebut menjadi teks pendek yang pas untuk dimasukkan ke dalam ruang gambar yang sempit. Susun teksnya dengan struktur berikut:
+
+Judul Utama: Buat 1 kalimat sangat pendek (maksimal 5-7 kata) yang paling menarik. Teks ini akan dicetak paling besar.
+Isi Edukasi: Rangkum inti materinya menjadi 3 poin singkat saja. Gunakan kalimat lisan yang sangat padat.
+Watermark: Tuliskan '@[USERNAME ANDA]'
+Micro CTA: Berikan 1 kalimat ajakan bertindak yang sangat pendek (contoh: 'Save tips ini!').
+
+Berikan hasilnya dalam teks biasa yang rapi agar saya mudah melakukan copy-paste ke aplikasi desain (seperti Canva).`
+            },
+            {
+                id: "bib-30d", categoryId: "cat-fase3", type: "prompt", isEditable: true,
+                title: "ProfitHub #30d - Ubah Struktur Edukasi Jadi Broadcast Text",
+                videoUrl: "https://youtu.be/_ufdg41rlC8",
+                rawPrompt: `Bertindaklah sebagai Expert Copywriter khusus untuk Telegram. Saya ingin mengembangkan kerangka materi harian saya menjadi satu pesan teks utuh yang siap kirim (broadcast post).
+
+Berikut adalah detail identitas saya dan kerangka materi hari ini:
+
+Identitas Branding Saya:
+Nama panggilan: [MASUKKAN NAMA ANDA]
+Slogan/Peran: [MASUKKAN PERAN/SLOGAN ANDA]
+Sapaan ke audiens: [MASUKKAN SAPAAN, misal: Guys / Sobat]
+
+Kerangka Materi Hari Ini:
+[COPY-PASTE MATERI SATU HARI DARI TELEGRAM DI SINI]
+
+Tugas Anda adalah menyusun pesan teks tersebut dengan aturan main berikut:
+Gaya Bahasa: Kasual, asik, dan otentik layaknya membagikan 'insight mahal' ke teman sendiri.
+Format Skimmable: Pecah teks menjadi paragraf-paragraf pendek (maks 2-3 baris). Gunakan teks tebal (bold) untuk menyoroti poin utama.
+
+Struktur Pesan (WAJIB):
+Hook: Langsung gunakan kalimat pancingan sebagai pembuka.
+Personal Intro: Masukkan sapaan khas menggunakan 'Identitas Branding Saya' di atas (Contoh: "Halo [Sapaan], balik lagi sama [Nama]...").
+Isi Edukasi: Jabarkan poin 'Isi' menjadi penjelasan lisan. Tambahkan analogi sehari-hari jika perlu.
+Call to Action (CTA): Masukkan poin 'Tindakan' secara natural.
+Penutup (Teaser) & Sign-off: Taruh kalimat 'Teaser' di paling bawah, akhiri dengan salam penutup singkat dari nama saya.`
+            },
+            {
+                id: "bib-31a", categoryId: "cat-fase3", type: "prompt", isEditable: true,
+                title: "ProfitHub #31a - Struktur Storytelling Build-in-Public (30 Hari)",
+                videoUrl: "https://youtu.be/rZP91ag1GsA",
+                rawPrompt: `Bertindaklah sebagai Ahli Storytelling dan Strategi 'Build in Public'. Saya ingin mengubah channel Telegram saya menjadi jurnal perjalanan pribadi selama 30 Hari.
+Saya tidak mau terlihat menggurui, saya ingin menceritakan proses saya membangun sesuatu dari nol, lengkap dengan keresahan, kegagalan, dan keberhasilannya.
+
+Kondisi Saya Saat Ini: [KONDISI ANDA SEKARANG]
+Proyek 30 Hari Saya: [PROYEK/TANTANGAN 30 HARI]
+Goal Akhir di Hari 30: [TARGET/GOAL YANG INGIN DICAPAI]
+
+Tolong buatkan struktur konten berseri 30 hari. Bagi menjadi 4 fase perjalanan emosional:
+Minggu 1: Keresahan & Deklarasi (Menceritakan 'Kenapa' saya mulai, rasa takut, janji 30 hari).
+Minggu 2: Eksperimen & 'Berdarah-darah' (Proses mencoba, kebingungan, minta saran audiens).
+Minggu 3: Menemukan Pola & Eksekusi (Mulai nemu ritme, 'Aha moment').
+Minggu 4: Hasil Akhir & Refleksi (Launching, hasil jujur, pelajaran).
+
+Sajikan dalam bentuk daftar terstruktur per hari dengan format:
+📅 Hari ke-[Nomor]: [Fase Emosi/Tema]
+Ide Cerita: [Garis besar cerita]
+Hook Emosional: [Kalimat pembuka yang jujur/vulnerable]
+Interaksi: [Cara minta saran dari audiens]`
+            },
+            {
+                id: "bib-31b", categoryId: "cat-fase3", type: "prompt", isEditable: true,
+                title: "ProfitHub #31b - Ubah Story Menjadi Jurnal Telegram",
+                videoUrl: "https://youtu.be/rZP91ag1GsA",
+                rawPrompt: `Bertindaklah sebagai Jurnalis Pribadi saya. Tolong tuliskan draf konten Telegram hari ini berdasarkan struktur 'Build in Public' saya.
+
+Cerita Hari Ini: [COPY-PASTE IDE CERITA HARI INI DARI STRUKTUR 30 HARI]
+Sapaan Audiens: [SAPAAN AUDIENS ANDA]
+
+Aturan Penulisan Storytelling:
+Sudut Pandang: Gunakan 'Saya/Aku' dan sapa audiens.
+Gaya Bahasa: Seperti nulis diary atau curhat di group chat sahabat. Jujur, vulnerable, 'apa adanya'. JANGAN terdengar seperti motivator.
+
+Alur Cerita:
+Hook: Mulai dengan perasaan jujur hari ini.
+Isi Cerita: Ceritakan proses yang dialami hari ini, kesulitannya, detail kecil biar nyata.
+Insight Kecil: Bagikan 1 hal kecil yang dipelajari (bukan menggurui).
+Pertanyaan (CTA): Lempar pertanyaan ke audiens untuk minta saran/opini.
+
+Format: Paragraf pendek-pendek (skimmable). Teks murni siap copy.`
+            },
+            {
+                id: "bib-31c", categoryId: "cat-fase3", type: "prompt", isEditable: true,
+                title: "ProfitHub #31c - Skrip Konten Menjadi Carousel Instagram",
+                videoUrl: "https://youtu.be/rZP91ag1GsA",
+                rawPrompt: `Bertindaklah sebagai Expert Content Strategist. Saya memiliki materi edukasi yang ingin saya ubah menjadi Carousel media sosial sebanyak 5 slide.
+
+Materi Dasar Saya:
+[PASTE MATERI/SKRIP DI SINI]
+
+Tugas 1: Copywriting Carousel
+Pecah materi tersebut menjadi teks untuk 5 slide yang saling berkesinambungan:
+Slide 1: Hook / Pancingan
+Slide 2: Pengantar Masalah
+Slide 3: Eksperimen / Solusi (Bagian 1)
+Slide 4: Eksperimen / Solusi (Bagian 2)
+Slide 5: Call to Action (CTA) & Sign-off
+
+Buat teksnya sangat ringkas, padat, dan skimmable.
+
+Tugas 2: Visualisasi
+Username: @[USERNAME ANDA]
+Warna Dominan: [WARNA BRAND ANDA]
+Tambahkan ide elemen ilustrasi vektor sederhana di setiap instruksi slide yang mewakili isi teks. Tampilkan teks dan instruksi visual secara grid/berjejer ke bawah agar saya mudah me-review.`
+            },
+            {
+                id: "bib-32", categoryId: "cat-fase3", type: "prompt", isEditable: true,
+                title: "ProfitHub #32 - Konten Bacotan (Opini Pro/Kontra)",
+                videoUrl: "https://youtu.be/EzCrbw5_Uf4",
+                rawPrompt: `Bertindaklah sebagai Analis Kritis dan Opini Maker profesional. Saya ingin membuat opini publik yang kuat berdasarkan sebuah sumber informasi.
+
+Sumber Informasi: [MASUKKAN LINK BERITA / VIDEO ATAU TOPIK VIRAL DI SINI]
+Posisi Argumen Saya: [PILIH SALAH SATU: Sependapat 100% / Mengkritik Tajam / Netral Menengahi]
+Gaya Bahasa: [PILIH: Kasual & Asik / Intelektual & Berwibawa / Satir & Menggelitik]
+
+Berdasarkan sumber di atas, tolong buatkan naskah argumen dengan instruksi berikut:
+Analisis Inti: Tarik 1-2 poin paling utama dari sumber tersebut agar audiens tahu konteksnya tanpa harus melihat sumber aslinya.
+Eksekusi Argumen: Bangun argumen sesuai dengan 'Posisi' yang saya pilih. Jika sependapat, berikan alasan logis/contoh nyata. Jika mengkritik, temukan celah logika (logical fallacy).
+Hook & Penutup: Awali dengan kalimat pancingan berani. Akhiri dengan pertanyaan memancing audiens diskusi di komentar.
+
+Format Publikasi: Jadikan 3-4 paragraf pendek yang sangat skimmable, siap copy-paste ke Sosmed/Telegram.`
+            },
+            {
+                id: "bib-33", categoryId: "cat-fase3", type: "article",
+                title: "ProfitHub #33 - Tahap Awal Mengubah Audiens jadi Customer",
+                videoUrl: "https://youtu.be/7L5WgChSD4A",
+                content: `<p>Materi transisi penting yang menjembatani antara fase Distribusi konten dengan fase Konversi penjualan. Tonton videonya secara utuh sebelum mulai membagikan penawaran harga/promosi kepada audiens.</p>`
+            },
+
+            // --- FASE 4: KONVERSI ---
+            {
+                id: "bib-34a", categoryId: "cat-fase4", type: "prompt", isEditable: true,
+                title: "ProfitHub #34a - Broadcast Soft Selling (Telegram)",
+                videoUrl: "https://youtu.be/3TiJik5YDiM",
+                rawPrompt: `Bertindaklah sebagai Copywriter profesional yang ahli dalam teknik soft selling. Saya telah mengunggah file ebook (atau berikan ringkasannya). Tolong baca dan analisis pesan utama dari ebook tersebut untuk dijadikan bahan tulisan.
+
+Buatkan teks copywriting untuk di-broadcast ke Channel Telegram dengan panduan berikut:
+
+1. Niche & Value Proposition
+Niche: [ISI NICHE ANDA]
+Value Proposition: [ISI MANFAAT UTAMA PRODUK]
+
+2. Pendekatan (Angle) Pembuka
+Tolong gunakan pendekatan [Storytelling / Edukasi / Pain Point] sebagai pengait (hook) di awal pesan.
+
+3. Gaya Bahasa & Aturan Penulisan
+Tone / Gaya Bahasa: [Santai seperti teman / Profesional / Empati memotivasi]
+Format Telegram: Gunakan paragraf pendek (skimmable), emoji secukupnya, teks bold/italic pada poin penting.
+Harga: DILARANG KERAS menyebutkan harga, nominal, atau biaya apa pun. Ini murni soft selling.
+
+4. Call to Action (CTA)
+Di bagian akhir, buatlah transisi kalimat yang halus (tidak hard selling) yang memberitahu audiens bahwa mereka bisa mempelajari solusi lengkapnya di ebook. Tutup dengan ajakan klik tautan:
+[MASUKKAN LINK EBOOK LYNK.ID ANDA]`
+            },
+            {
+                id: "bib-34b", categoryId: "cat-fase4", type: "prompt", isEditable: true,
+                title: "ProfitHub #34b - Broadcast Hard Selling (Telegram)",
+                videoUrl: "https://youtu.be/3TiJik5YDiM",
+                rawPrompt: `Bertindaklah sebagai Copywriter profesional yang ahli dalam menulis teks hard selling dengan konversi tinggi.
+
+Tolong rangkum manfaat terbesar produk saya menjadi penawaran yang sulit ditolak untuk di-broadcast ke Telegram:
+
+1. Niche & Keunggulan Utama
+Niche: [ISI NICHE ANDA]
+Value Proposition: [ISI MANFAAT UTAMA PRODUK]
+
+2. Detail Harga & Batasan (Urgency)
+Harga Normal: [Rp 150.000 / Harga asli]
+Harga Promo saat ini: [Rp 49.000 / Harga diskon]
+Efek Kelangkaan: [Promo ditutup malam ini / Sisa 10 slot]
+Bonus (Jika ada): [Bonus tambahan]
+
+3. Gaya Bahasa & Format
+Tone / Gaya Bahasa: [Tegas persuasif / Menggebu-gebu / To-the-point]
+Format Telegram: Headline mencolok di awal (bold/kapital). Gunakan bullet points untuk manfaat. Teks tebal pada nominal diskon dan urgensi.
+
+4. Struktur & CTA
+Awali Headline yang menyasar masalah audiens. Jelaskan produk ini solusi instan. Sebutkan poin manfaat. Masukkan detail harga coret (Normal vs Promo). Berikan dorongan urgency.
+CTA: Tutup dengan ajakan bertindak tegas, klik tautan pembelian:
+[MASUKKAN LINK PEMBELIAN LYNK.ID ANDA]`
+            },
+            {
+                id: "bib-35", categoryId: "cat-fase4", type: "prompt", isEditable: true,
+                title: "ProfitHub #35 - Funneling WhatsApp (Chat & Gambar Story)",
+                videoUrl: "https://youtu.be/xglF6f1Wp6A",
+                rawPrompt: `TEMPLATE PESAN CHAT WHATSAPP:
+(Pesan 1): Kak, perkenalkan saya [NAMA ANDA], nama kakak siapa?
+(Pesan 2): Salam kenal kak [NAMA AUDIENS]. Untuk mendapatkan EBook [NAMA EBOOK] secara Gratis, kakak harus penuhi syarat ini: 1. Save WhatsApp saya. 2. Kirim bukti screenshot ke sini ya kak. Ebook Gratisnya saya kirim kalau syarat udah terpenuhi 😊
+(Pesan 3 - H+1): Hallo kak [NAMA AUDIENS], kakak udah baca ebooknya sampai mana nih? Kalau ada yang mau didiskusikan, jangan sungkan hubungi saya ya kak 😊
+
+---
+PROMPT MENJAWAB KELUHAN/PERTANYAAN AUDIENS DI WA:
+Saya adalah pedagang yang menjual produk digital berupa ebook.
+Niche saya: [NICHE ANDA]
+Value Proposition: [MANFAAT UTAMA PRODUK]
+Gaya bahasa saya: [GAYA BAHASA ANDA]
+Pesan Audiens yang masuk: [COPY PASTE CHAT DARI AUDIENS KE SINI]
+
+Bantu saya membalas pesan WhatsApp ini, selesaikan masalah mereka, dan jika relevan arahkan ke produk premium saya secara halus.
+
+---
+PROMPT BIKIN TEKS UNTUK GAMBAR STORY WA (EDUKASI):
+Kamu adalah seorang Content Creator. Ekstrak intisari dari topik: [TOPIK MATERI EDUKASI HARI INI] untuk dibuatkan desain WA Story.
+
+Aturan Visual (Aspek 3:4 vertikal):
+Rangkum materi menjadi teks sangat padat & singkat.
+- 1 Judul utama (Hook) menarik.
+- 2-3 poin inti (maks 1 kalimat per poin).
+- Gaya Bahasa: [Santai/Kasual/Profesional]
+- Tema Visual Niche: [Warna brand / Nuansa gambar]
+
+Buatkan teks kontennya saja agar saya bisa menyalinnya ke Canva.`
+            },
+            {
+                id: "bib-36", categoryId: "cat-fase4", type: "prompt", isEditable: true,
+                title: "ProfitHub #36 - Copywriting Promosi WA (Soft, Hard, Poster)",
+                videoUrl: "https://youtu.be/vUfwLbtiapU",
+                rawPrompt: `(PILIH SALAH SATU TUGAS DI BAWAH INI DAN BERIKAN KE AI)
+
+OPSI 1: PROMPT WA SOFT SELLING
+Bertindaklah sebagai Copywriter WA Marketing. Buatkan pesan personal WhatsApp dengan detail:
+Niche: [NICHE ANDA]
+Value Proposition: [MANFAAT PRODUK]
+Gaya Bahasa: [Santai seperti chat ke teman dekat, no basa-basi kaku]
+Panjang: Sangat Singkat (3 paragraf).
+Aturan: Awali dengan sapaan "kak". DILARANG KERAS menggunakan kata "diskon/beli". Gunakan pendekatan "berbagi info". Akhiri dengan link baca selengkapnya: [LINK PRODUK ANDA]
+
+---
+OPSI 2: PROMPT WA HARD SELLING
+Bertindaklah sebagai Copywriter WA Marketing. Buatkan penawaran hard selling via WA yang persuasif tapi tidak seperti bot:
+Niche: [NICHE ANDA]
+Harga Normal: [Rp 150.000] | Harga Promo: [Rp 49.000]
+Kelangkaan/Urgency: [Hanya sampai jam 9 malam]
+Gaya Bahasa: [Tegas & to the point]
+Aturan: Sangat singkat. Gunakan bullet points (maks 3 manfaat). Wajib sebutkan diskon harga coret dan urgensi. CTA langsung arahkan ke link beli: [LINK PRODUK ANDA]
+
+---
+OPSI 3: PROMPT POSTER GAMBAR JUALAN STORY WA
+Berdasarkan penawaran produk saya di topik [NICHE ANDA], jalankan 3 tugas ini sekaligus:
+Tugas 1: Buat Headline super singkat (Maks 3-4 kata).
+Tugas 2: Instruksi Desain Poster 3:4. Tema visual: [Desain minimalis / layout clean]. Teks yang dicetak di gambar: Headline, Harga [HANYA RP 49 RIBU!], dan Urgency.
+Tugas 3: Buat Caption WA Story (Maks 3 baris) dengan gaya [Tegas, FOMO], arahkan ke klik link: [LINK PRODUK ANDA]`
+            },
+            {
+                id: "bib-37", categoryId: "cat-fase4", type: "prompt", isEditable: true,
+                title: "ProfitHub #37 - Mesin Teknik Closing (Bantu Jawab Chat)",
+                videoUrl: "https://youtu.be/uGeidXrpTso",
+                rawPrompt: `Mulai sekarang, bertindaklah sebagai "Mesin Teknik Closing", seorang pakar penjualan dan negosiasi kelas dunia yang menguasai psikologi konsumen dan berbagai strategi closing (Assumptive Close, Scarcity Close, Empathy Close, Overcoming Objections).
+
+Tugas Anda:
+Analisis isi percakapan chat antara saya (penjual) dan calon pembeli di bawah ini. Buatkan draf balasan terbaik untuk memicu closing (penjualan) secepat mungkin tanpa terkesan mengemis/memaksa.
+
+Chat Pembeli Terakhir: [COPY PASTE CHAT PEMBELI YANG MASIH RAGU DI SINI]
+Gaya bahasa balasan: [Asik ala Jaksel / Sopan BUMN / Ramah berempati]
+
+Format Jawaban yang Harus Anda Berikan:
+1. Analisis Cepat: 1-2 kalimat menebak apa keraguan utama pembeli dari chat tersebut.
+2. 3 Opsi Balasan Sakti (Siap Copy-Paste):
+   - Opsi 1: Fokus urgensi promo/kehabisan slot.
+   - Opsi 2: Fokus garansi/kenyamanan/mematahkan keraguan.
+   - Opsi 3: Fokus Assumptive (seolah-olah mereka sudah pasti beli, tinggal ditanya bayar pakai bank apa).
+3. Alasan: 1 kalimat singkat di bawah tiap opsi kenapa pesan itu akan berhasil.`
+            },
+            {
+                id: "bib-38", categoryId: "cat-fase4", type: "article",
+                title: "ProfitHub #38 - Cara Melipatgandakan Keuntungan",
+                videoUrl: "https://youtu.be/5S3riJaY8Hw",
+                content: `<p>Selamat, Anda telah tiba di penghujung Fase Core Execution! Video pamungkas ini akan membeberkan strategi dan hitung-hitungan *back-end* tentang bagaimana cara melipatgandakan keuntungan bersih Anda tanpa harus menambah budget iklan atau mencari pelanggan baru secara drastis.</p>`
+            },
+
+            // --- FASE EXPERT: WEBSITE ---
+            {
+                id: "exp-web-01", categoryId: "cat-expert-web", type: "article",
+                title: "Materi 01: Vibe Coding Tanpa Ngerti Coding!",
+                videoUrl: "https://youtu.be/7xkSof2epo0",
+                content: `
+                    <div class="bg-purple-50 border-l-4 border-purple-500 p-4 mb-6 rounded-r-lg">
+                        <p class="font-bold text-purple-900 m-0">Selamat Datang di Fase Expert!</p>
+                        <p class="text-sm text-purple-700 m-0 mt-1">Fase ini ditujukan bagi Anda yang ingin level-up dari Link-in-bio menjadi memiliki Website Sales Page mandiri. Anda akan belajar setup web, modifikasi template HTML dengan bantuan AI, hingga pasang domain.</p>
+                    </div>
+                    <p>Pada video pertama ini, kita akan membahas konsep dasar bagaimana AI bisa membantu kita mengedit dan meluncurkan website tanpa harus menulis satu baris kode pun dari nol.</p>
+                `
+            },
+            {
+                id: "exp-web-02", categoryId: "cat-expert-web", type: "article",
+                title: "Materi 02: Bikin Akun Github",
+                videoUrl: "https://youtu.be/4MzgujjiPf4",
+                content: `
+                    <p>GitHub adalah platform tempat kita akan menyimpan file kode (HTML/CSS) dari website kita secara gratis. Tonton videonya untuk cara mendaftar dan menyiapkan repositori pertama Anda.</p>
+                    <a href="https://github.com/" target="_blank" class="inline-flex items-center gap-2 bg-slate-800 text-white px-5 py-2.5 rounded-lg text-sm font-bold mt-4 hover:bg-black transition-colors">
+                        Buka Website GitHub ↗
+                    </a>
+                `
+            },
+            {
+                id: "exp-web-03", categoryId: "cat-expert-web", type: "prompt", isEditable: true,
+                title: "Materi 03: Mulai Bikin Website Sendiri",
+                videoUrl: "https://youtu.be/hVKPQBTAlgY",
+                rawPrompt: `STRUKTUR WEBSITE (FRONTEND):
+
+Tampilan website cocok untuk produk furniture, tanpa navigasi bar, ada header yang tediri dari judul dan sub judul. Kemudian isi website yang terdiri dari deskripsi produk, fitur dan value produk, tombol pesan sekarang, testimoni produk, penawaran, tombol beli sekarang, footer yang berisi informasi perusahaan, seperti alamat, kontak, sosmed, dll.
+
+Warna Background: [Warna Background]
+Warna tombol: [Warna Tombol]
+Warna font tombol: [Warna Font Tombol]
+Warna font: [Warna Font]
+
+Jenis font untuk judul: [Jenis Font Judul]
+Jenis font umum: [Jenis Font Umum]
+
+INFORMASI BRAND/PERUSAHAAN:
+Nama Brand: [Nama Brand]
+Contact: [Nomor Kontak]
+Instagram: [Link/Username IG]
+YouTube: [Link/Username YouTube]
+Tiktok: [Link/Username TikTok]
+Alamat: [Alamat Lengkap]
+
+INFORMASI PRODUK:
+Nama Produk: [Nama Produk]
+Deskripsi Produk: [Deskripsi Produk]
+
+Fitur dan value produk: [Pastekan fitur dan value produk disini]
+
+COPYWRITING: [Pastekan copywriting penjualan disini]
+
+Bikinin saya 1 Prompt untuk membuat index.html yang berisi informasi-informasi diatas dalam menciptakan frontend website/landingpage yang relevan.`
+            },
+            {
+                id: "exp-web-04", categoryId: "cat-expert-web", type: "article",
+                title: "Materi 04: Mengedit Website",
+                videoUrl: "https://youtu.be/ufnF9HSbEiE",
+                content: `<p>Video ini membahas cara dasar mengedit file HTML (mengubah teks, mengganti gambar, dsb) langsung dari repositori GitHub Anda.</p>`
+            },
+            {
+                id: "exp-web-05", categoryId: "cat-expert-web", type: "prompt", isEditable: true,
+                title: "Materi 05: Landingpage Bio (Pasang Template)",
+                videoUrl: "https://youtu.be/rBIO2eWJoqY",
+                rawPrompt: `Kamu adalah editor HTML profesional. Saya melampirkan file index.html sebuah halaman "link in bio" yang berisi ilustrasi SVG dan animasi buatan tangan.
+
+TUGASMU: isi teks, tautan, dan nama file aset sesuai DATA SAYA di bawah. Selain itu, jangan ubah apa pun.
+
+ATURAN EMAS (WAJIB DIPATUHI):
+1. HANYA ubah teks yang didahului komentar <!-- AI INSTRUCTION: ... --> dan atribut
+   src="" / href="" yang ditandai <!-- [[ ... ]] -->. Patuhi batas panjang yang tertulis.
+2. DILARANG KERAS menyentuh: seluruh isi <style>, seluruh isi <script>, semua elemen
+   <svg> beserta <path>/<clipPath>/<defs>/koordinatnya, serta semua class, id, dan
+   struktur HTML. Ini mencakup SEMUA ilustrasi dekoratif dan animasinya, apa pun temanya.
+   Jangan "merapikan", "menyederhanakan", "memperbaiki", atau menulis ulang kode —
+   termasuk bila menurutmu ada yang bisa dioptimalkan.
+3. JANGAN menambah framework, CDN, library, font, atau file eksternal apa pun.
+4. MENAMBAH TAUTAN: duplikat seluruh blok tombol tautan yang sudah ada, lalu ganti
+   teksnya saja. Jangan mengubah nama class. MENGHAPUS TAUTAN: hapus satu blok tombol
+   secara utuh. Jika ada kelas penanda "tombol unggulan", biarkan hanya pada satu tombol.
+5. JIKA ADA badge/label kecil pada tombol: ganti teksnya, atau hapus elemen badge itu
+   secara utuh bila tidak dipakai.
+6. JIKA ADA ikon sosial media: hanya ganti href-nya. Untuk yang tidak dipakai, hapus
+   seluruh elemen <a> ikon tersebut — JANGAN mengubah isi <svg> ikonnya.
+7. Isi nama file foto profil dan favicon sesuai data saya (file-nya saya upload sendiri).
+8. Kembalikan SELURUH isi file index.html yang sudah terisi, utuh dan siap disimpan.
+
+DATA SAYA:
+
+[PROFIL]
+- Nama tampilan : [Nama Tampilan Anda]
+- Bio singkat   : [Tulis Bio Singkat Anda]
+
+[ASET — file yang saya upload sendiri ke folder yang sama]
+- Nama file foto profil : [Nama file foto.jpg/png]
+
+[TAUTAN — tambah sebanyak yang diinginkan]
+- Tautan 1
+Judul: [Judul Tautan 1]
+Sub judul: [Sub Judul Tautan 1]
+link: [URL Tautan 1]
+
+[SOSIAL MEDIA] (tulis "hapus" bila tak dipakai)
+- Instagram : [Link IG]
+- TikTok    : [Link TikTok]
+- YouTube   : [Link YouTube]`
+            },
+            {
+                id: "exp-web-06", categoryId: "cat-expert-web", type: "article",
+                title: "Materi 06: Beli Domain",
+                videoUrl: "https://youtu.be/AisYtA3vjiY",
+                content: `<p>Langkah krusial untuk terlihat profesional: membeli nama domain sendiri (contoh: namakamu.com atau namabrand.id).</p>`
+            },
+            {
+                id: "exp-web-07", categoryId: "cat-expert-web", type: "article",
+                title: "Materi 07: Pasang Domain ke Website",
+                videoUrl: "https://youtu.be/e7eOFsP3OjM",
+                content: `<p>Tutorial teknis cara menghubungkan nama domain yang sudah Anda beli ke file website yang ada di GitHub Pages.</p>`
+            },
+            {
+                id: "exp-web-08a", categoryId: "cat-expert-web", type: "prompt", isEditable: true,
+                title: "Materi 08a: Landingpage Produk (Edit Konten)",
+                videoUrl: "https://youtu.be/7YKOEkgYasU",
+                rawPrompt: `Kamu adalah Copywriter direct-response + editor HTML profesional berbahasa Indonesia.
+
+Saya melampirkan DUA file:
+1. FILE PRODUK saya (PDF) — untuk kamu pahami isinya.
+2. index.html — template landing page "AI-Ready".
+
+TUGASMU:
+Analisa isi PDF produk saya, lalu ISI semua teks di index.html tepat SETELAH setiap komentar <!-- AI INSTRUCTION: ... --> sesuai instruksinya, sehingga menjadi landing page yang menjual untuk produk saya.
+
+ATURAN EMAS (WAJIB DIPATUHI):
+1. Sumber struktur = komentar AI INSTRUCTION di dalam index.html. Patuhi batas panjang yang tertulis (mis. "maks 8 kata").
+2. DILARANG mengubah struktur HTML, tag, class, CSS/<style>, atau JavaScript. Kamu HANYA boleh mengganti teks dan atribut src="" serta href="". Jangan tambah framework apa pun.
+3. TESTIMONI = GAMBAR screenshot asli. Cukup ganti src gambar dengan nama file testimoni saya. DILARANG KERAS menulis atau mengarang kutipan/nama testimoni.
+4. LOGO: pilih SALAH SATU — ganti teks brand ATAU pasang <img>. JANGAN dua-duanya.
+5. Angka statistik (jumlah pembeli/rating) HANYA diisi kalau saya beri data nyata di bawah. Jika tidak ada, HAPUS blok grid statistik itu.
+6. LINK CTA: HANYA tombol CTA TERAKHIR (di bagian harga) yang diisi link checkout asli pada href. Tombol CTA lain (navbar, hero, tengah) sudah di-set href="#cta-akhir" agar scroll ke harga — JANGAN diubah jadi link checkout. Ganti juga src gambar produk, link sosmed, dan link WhatsApp (format wa.me/62...?text=... dengan pesan ter-encode).
+7. Kembalikan SELURUH isi file index.html yang sudah terisi, utuh dan siap disimpan.
+
+DATA SAYA:
+- Nama produk: [Nama Produk]
+- Target market: [Target Market]
+- Gaya bahasa: [Gaya Bahasa]
+- Harga normal(coret): [Harga Normal]
+- Harga spesial: [Harga Spesial]
+- Garansi/urgensi: [Garansi atau Urgensi]
+
+- Link Checkout (CTA Akhir): [Link Checkout/Payment]
+- Instagram: [Link IG]
+- TikTok: [Link TikTok]
+- YouTube: [Link YouTube]
+
+- WhatsApp nomor: [Nomor WA (Mulai dari 62)]
+- WhatsApp pesan awal: [Pesan Otomatis WA]
+
+- Nama file logo: [File Logo]
+- Nama file produk: [File Cover Produk]
+- Nama file testimoni: [File Testimoni]
+- Nama file logo Instagram: [File Icon IG]
+- Nama file logo tiktok: [File Icon TikTok]
+- Nama file logo YouTube: [File Icon YouTube]
+
+*(Jika tidak punya file testimoni, hapus blok komentar HTML yang berkaitan dengan testimoni sesuai panduan).*`
+            },
+            {
+                id: "exp-web-08b", categoryId: "cat-expert-web", type: "prompt", isEditable: true,
+                title: "Materi 08b: Landingpage Produk (Edit Tema Visual)",
+                videoUrl: "https://youtu.be/7YKOEkgYasU",
+                rawPrompt: `Ubah tema visual index.html ini. Kamu HANYA boleh menyentuh:
+(a) blok CSS variables di dalam :root (bagian "PENGATURAN USER"), dan
+(b) baris <link> Google Fonts di <head> JIKA saya mengganti font.
+Jangan ubah kode lain (struktur, class, layout).
+
+Tema saya:
+- Warna utama/tombol : [mis. hijau emerald / biru navy]
+- Nuansa latar       : [mis. hitam pekat / putih bersih]
+- Karakter font      : [mis. tegas modern / elegan / santai]
+- Bentuk tombol      : [kotak / agak membulat / bulat penuh]
+
+Instruksi:
+- Pilihkan kode HEX yang harmonis untuk semua variabel warna.
+- Jika saya minta ganti font: pilih Google Font yang cocok, perbarui --font-heading dan --font-body di :root, DAN update baris <link> di <head> agar memuat font itu.
+- Kembalikan SELURUH isi file index.html yang sudah diperbarui, utuh & siap disimpan.`
+            },
+            {
+                id: "exp-web-09", categoryId: "cat-expert-web", type: "html-gallery",
+                title: "Gudang Template HTML",
+                htmlTemplates: [
+                    { title: "Template Link-in-Bio 1", desc: "Desain minimalis cocok untuk kreator konten.", previewUrl: "#" },
+                    { title: "Template Link-in-Bio 2", desc: "Desain dark mode dengan animasi SVG elegan.", previewUrl: "#" },
+                    { title: "Landing Page Produk Digital", desc: "Long-form copy untuk jualan ebook/kursus.", previewUrl: "#" },
+                    { title: "Landing Page Jasa/Service", desc: "Fokus pada portofolio dan booking konsultasi.", previewUrl: "#" },
+                    { title: "Squeeze Page Lead Magnet", desc: "Desain simple untuk mengumpulkan database email/WA.", previewUrl: "#" }
+                ]
+            }
+        ];
+
+        // --- 2. STATE MANAGEMENT ---
+        const APP_STATE = {
+            currentItem: null,
+            inputValues: {},
+            progress: JSON.parse(localStorage.getItem('profitHubProgress')) || {}, 
+            expandedCategories: { "cat-start": true, "cat-fase1": true, "cat-expert-web": false } 
+        };
+
+        // Register functions globally so HTML onclick handlers can see them
+        window.toggleSidebar = () => {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        };
+
+        window.toggleCategory = (catId) => {
+            APP_STATE.expandedCategories[catId] = !APP_STATE.expandedCategories[catId];
+            renderSidebar();
+        };
+
+        window.toggleProgress = (id, e) => {
+            e.stopPropagation();
+            APP_STATE.progress[id] = !APP_STATE.progress[id];
+            localStorage.setItem('profitHubProgress', JSON.stringify(APP_STATE.progress));
+            updateGlobalProgress();
+            renderSidebar();
+        };
+
+        window.copyPrompt = () => {
+            if (!APP_STATE.currentItem || APP_STATE.currentItem.type !== 'prompt') return;
+            
+            const raw = APP_STATE.currentItem.rawPrompt;
+            let finalString = raw.replace(/\[(.*?)\]/g, (match, varName) => {
+                const userVal = APP_STATE.inputValues[varName];
+                return (userVal && userVal.trim() !== '') ? userVal : match;
+            });
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(finalString).then(showToast).catch(fallbackCopyTextToClipboard);
+            } else {
+                fallbackCopyTextToClipboard(finalString);
+            }
+        };
+
+        // --- 3. CORE RENDERING LOGIC ---
+        const initApp = () => {
+            renderSidebar();
+            updateGlobalProgress();
+            loadModule('welcome-main');
+        };
+
+        const updateGlobalProgress = () => {
+            const trackableItems = appDatabase.filter(i => i.type === 'prompt' || i.type === 'article');
+            const total = trackableItems.length;
+            const completed = trackableItems.filter(i => APP_STATE.progress[i.id]).length;
+            
+            document.getElementById('progressCount').textContent = completed;
+            document.getElementById('totalCount').textContent = total;
+            
+            const percentage = total === 0 ? 0 : Math.round((completed / total) * 100);
+            document.getElementById('progressText').textContent = `${percentage}%`;
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+        };
+
+        const renderSidebar = () => {
+            const nav = document.getElementById('sidebarNav');
+            nav.innerHTML = '';
+
+            CATEGORIES.forEach(cat => {
+                const items = appDatabase.filter(item => item.categoryId === cat.id);
+                if (items.length === 0) return;
+
+                const isExpanded = APP_STATE.expandedCategories[cat.id];
+                
+                // Category Header
+                const catHeader = document.createElement('div');
+                catHeader.className = `flex items-center justify-between p-3 mt-2 rounded-xl cursor-pointer transition-colors border border-transparent ${isExpanded ? 'bg-white shadow-sm border-slate-200' : 'hover:bg-slate-100 text-slate-600'}`;
+                catHeader.onclick = () => toggleCategory(cat.id);
+                catHeader.innerHTML = `
+                    <span class="font-bold text-sm truncate ${cat.color}">${cat.title}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 transform transition-transform ${isExpanded ? 'rotate-180' : ''}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                `;
+                nav.appendChild(catHeader);
+
+                // Category Items
+                if (isExpanded) {
+                    const itemList = document.createElement('div');
+                    itemList.className = "flex flex-col gap-0.5 mt-1.5 mb-3 pl-3 border-l-2 border-slate-100 ml-3";
+                    
+                    items.forEach(item => {
+                        const isCompleted = APP_STATE.progress[item.id];
+                        const isActive = APP_STATE.currentItem && APP_STATE.currentItem.id === item.id;
+                        
+                        const btn = document.createElement('button');
+                        btn.className = `w-full text-left flex items-start gap-3 px-3 py-2 rounded-lg transition-all group relative overflow-hidden ${isActive ? 'bg-indigo-600 text-white shadow-md' : 'hover:bg-indigo-50 text-slate-600'}`;
+                        btn.onclick = () => loadModule(item.id);
+                        
+                        // Icon based on type
+                        let iconHtml = '';
+                        if(item.type === 'plr-gallery' || item.type === 'html-gallery') {
+                            iconHtml = `<span class="text-[14px]">📚</span>`;
+                        } else if (item.type === 'welcome') {
+                            iconHtml = `<span class="text-[14px] mt-0.5">🏠</span>`;
+                        } else {
+                            iconHtml = `<div class="mt-0.5 shrink-0" onclick="toggleProgress('${item.id}', event)">
+                                ${isCompleted 
+                                    ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ${isActive ? 'text-indigo-200' : 'text-emerald-500'} hover:text-emerald-600 transition-colors" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>`
+                                    : `<div class="h-5 w-5 rounded-full border-2 ${isActive ? 'border-indigo-400 bg-indigo-500' : 'border-slate-300 bg-white group-hover:border-indigo-400'} transition-colors"></div>`
+                                }
+                            </div>`;
+                        }
+
+                        btn.innerHTML = `
+                            ${iconHtml}
+                            <span class="text-sm font-medium leading-snug truncate whitespace-normal">${item.title}</span>
+                        `;
+                        itemList.appendChild(btn);
+                    });
+                    nav.appendChild(itemList);
+                }
+            });
+        };
+
+        const loadModule = (id) => {
+            const item = appDatabase.find(p => p.id === id);
+            if (!item) return;
+
+            APP_STATE.currentItem = item;
+            APP_STATE.inputValues = {}; // Reset prompt inputs
+            
+            renderSidebar(); // Update active state
+            
+            // Hide all views first
+            ['view-welcome', 'view-article', 'view-plr', 'view-prompt'].forEach(v => {
+                document.getElementById(v).classList.add('hidden');
+            });
+
+            // Set Header Texts
+            const catObj = CATEGORIES.find(c => c.id === item.categoryId);
+            document.getElementById('headerCategory').textContent = catObj ? catObj.title.replace(/[^a-zA-Z0-9 ]/g, '') : "Modul";
+            document.getElementById('headerTitle').textContent = item.title;
+            
+            // Render specific View based on type
+            if (item.type === 'welcome') {
+                document.getElementById('view-welcome').classList.remove('hidden');
+                document.getElementById('headerActionContainer').innerHTML = '';
+            } else if (item.type === 'article') {
+                renderArticleView(item, catObj);
+            } else if (item.type === 'plr-gallery') {
+                renderPLRView(item);
+            } else if (item.type === 'html-gallery') {
+                renderHTMLGalleryView(item);
+            } else if (item.type === 'prompt') {
+                renderPromptView(item);
+            }
+
+            // Scroll top main area
+            document.getElementById('mainScrollArea').scrollTo(0,0);
+
+            // Auto-close sidebar on mobile
+            if(window.innerWidth < 1024) { 
+                const sidebar = document.getElementById('sidebar');
+                if(!sidebar.classList.contains('-translate-x-full')) window.toggleSidebar();
+            }
+        };
+
+        const renderArticleView = (item, catObj) => {
+            document.getElementById('view-article').classList.remove('hidden');
+            document.getElementById('headerActionContainer').innerHTML = ''; // Clear header action
+            
+            document.getElementById('articleTag').textContent = catObj ? catObj.title.replace(/[^a-zA-Z0-9 ]/g, '') : 'Materi';
+            document.getElementById('articleHeadline').textContent = item.title;
+            document.getElementById('articleContent').innerHTML = item.content || '';
+            
+            // Handle Video Banner Button (Link Only)
+            const videoWrapper = document.getElementById('articleVideoWrapper');
+            const videoBtn = document.getElementById('articleVideoBtn');
+            
+            if(item.videoUrl) {
+                videoWrapper.classList.remove('hidden');
+                videoBtn.href = item.videoUrl;
+            } else {
+                videoWrapper.classList.add('hidden');
+            }
+
+            // Handle Complete Button
+            const completeBtn = document.getElementById('articleCompleteBtn');
+            completeBtn.onclick = () => {
+                if(!APP_STATE.progress[item.id]) {
+                    APP_STATE.progress[item.id] = true;
+                    localStorage.setItem('profitHubProgress', JSON.stringify(APP_STATE.progress));
+                    updateGlobalProgress();
+                    renderSidebar();
+                }
+                completeBtn.innerHTML = "✔ Sudah Diselesaikan";
+                completeBtn.classList.remove('bg-emerald-500');
+                completeBtn.classList.add('bg-slate-300', 'text-slate-600', 'cursor-not-allowed');
+            };
+            
+            if(APP_STATE.progress[item.id]) {
+                completeBtn.innerHTML = "✔ Sudah Diselesaikan";
+                completeBtn.classList.remove('bg-emerald-500', 'hover:bg-emerald-600', 'text-white');
+                completeBtn.classList.add('bg-slate-200', 'text-slate-500', 'cursor-default');
+            } else {
+                completeBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg> Tandai Selesai`;
+                completeBtn.className = "bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold transition-all shadow-md flex items-center gap-2";
+            }
+        };
+
+        const renderPLRView = (item) => {
+            document.getElementById('view-plr').classList.remove('hidden');
+            document.getElementById('headerActionContainer').innerHTML = ''; 
+            
+            // Update Title for Gallery
+            document.getElementById('plrGalleryTitle').textContent = item.title;
+            document.getElementById('plrGalleryDesc').innerHTML = "Pilih niche yang Anda inginkan. Setiap niche berisi 3 ebook dengan struktur <b>Value Ladder</b> (Entry, Main, Hero) yang siap Anda modifikasi di Fase 1.";
+
+            const grid = document.getElementById('plrGrid');
+            grid.innerHTML = '';
+
+            item.plrData.forEach(nicheObj => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-lg transition-shadow";
+                
+                let listHtml = '';
+                nicheObj.ebooks.forEach((eb, idx) => {
+                    const colors = ['border-blue-200 bg-blue-50 text-blue-700', 'border-indigo-200 bg-indigo-50 text-indigo-700', 'border-amber-200 bg-amber-50 text-amber-700'];
+                    const color = colors[idx % 3];
+                    
+                    listHtml += `
+                        <div class="p-3 border border-slate-100 rounded-lg bg-slate-50 relative group flex flex-col items-start">
+                            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${color} absolute -top-2.5 left-3 border">${eb.tier}</span>
+                            <h4 class="font-bold text-slate-800 text-sm mt-1">${eb.title}</h4>
+                            <p class="text-xs text-slate-500 mt-0.5 line-clamp-1 mb-2">${eb.desc}</p>
+                            <a href="${eb.link || '#'}" target="_blank" class="inline-flex items-center gap-1 mt-auto text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors bg-white border border-indigo-100 px-3 py-1.5 rounded-md shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                                Download Ebook
+                            </a>
+                        </div>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="bg-gradient-to-r from-slate-800 to-slate-900 p-5 flex items-center gap-3">
+                        <span class="text-3xl">${nicheObj.icon}</span>
+                        <h3 class="font-extrabold text-white text-lg">${nicheObj.niche}</h3>
+                    </div>
+                    <div class="p-5 space-y-4 flex flex-col h-[calc(100%-80px)]">
+                        ${listHtml}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        };
+
+        const renderHTMLGalleryView = (item) => {
+            // Reusing the PLR view container but changing its content structure
+            document.getElementById('view-plr').classList.remove('hidden');
+            document.getElementById('headerActionContainer').innerHTML = ''; 
+            
+            document.getElementById('plrGalleryTitle').textContent = item.title;
+            document.getElementById('plrGalleryDesc').innerHTML = "Berikut adalah daftar aset template HTML statis (Landing Page & Link-in-Bio) yang bisa Anda download dan edit menggunakan bantuan AI di fase ini.";
+
+            const grid = document.getElementById('plrGrid');
+            grid.innerHTML = '';
+
+            item.htmlTemplates.forEach((tpl, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-lg transition-shadow flex flex-col";
+                
+                card.innerHTML = `
+                    <div class="bg-purple-600 p-5 flex items-center gap-3">
+                        <div class="bg-white/20 p-2 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                        </div>
+                        <h3 class="font-extrabold text-white text-lg">Template 0${index + 1}</h3>
+                    </div>
+                    <div class="p-5 flex flex-col flex-1">
+                        <h4 class="font-bold text-slate-800 text-base mb-1">${tpl.title}</h4>
+                        <p class="text-sm text-slate-500 mb-4">${tpl.desc}</p>
+                        
+                        <div class="mt-auto grid grid-cols-2 gap-2">
+                            <a href="${tpl.previewUrl}" target="_blank" class="flex items-center justify-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors px-3 py-2.5 rounded-lg border border-slate-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                Live Preview
+                            </a>
+                            <a href="#" class="flex items-center justify-center gap-1.5 text-xs font-bold text-purple-700 bg-purple-100 hover:bg-purple-200 transition-colors px-3 py-2.5 rounded-lg border border-purple-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                                Download .Zip
+                            </a>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        };
+
+        const renderPromptView = (item) => {
+            const view = document.getElementById('view-prompt');
+            view.classList.remove('hidden');
+            
+            // Header Video Button (Keep as alternative small button)
+            const actionContainer = document.getElementById('headerActionContainer');
+            if (item.videoUrl) {
+                actionContainer.innerHTML = `
+                    <a href="${item.videoUrl}" target="_blank" class="inline-flex justify-center items-center gap-2 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 px-4 py-2 rounded-lg text-xs font-bold transition-all shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg>
+                        Tonton Tutorial
+                    </a>
+                `;
+            } else {
+                actionContainer.innerHTML = '';
+            }
+
+            // Prompt Video Banner Button (Link Only)
+            const promptVideoWrapper = document.getElementById('promptVideoWrapper');
+            const promptVideoBtn = document.getElementById('promptVideoBtn');
+
+            if(item.videoUrl) {
+                promptVideoWrapper.classList.remove('hidden');
+                promptVideoBtn.href = item.videoUrl;
+            } else {
+                promptVideoWrapper.classList.add('hidden');
+            }
+
+            // Extract Variables via Regex
+            const regex = /\[(.*?)\]/g;
+            const variables = [];
+            let match;
+            while ((match = regex.exec(item.rawPrompt)) !== null) {
+                if (!variables.includes(match[1])) variables.push(match[1]);
+            }
+
+            // Form Logic
+            const inputPanel = document.getElementById('inputPanel');
+            const formContainer = document.getElementById('formContainer');
+            formContainer.innerHTML = '';
+            
+            if (item.isEditable && variables.length > 0) {
+                inputPanel.classList.remove('hidden');
+                
+                variables.forEach(varName => {
+                    const div = document.createElement('div');
+                    const label = document.createElement('label');
+                    label.className = "block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide";
+                    label.textContent = varName;
+                    
+                    let input;
+                    if (varName.length > 30 || varName.toLowerCase().includes('contoh') || varName.toLowerCase().includes('isi') || varName.toLowerCase().includes('pastekan')) {
+                        input = document.createElement('textarea');
+                        input.rows = 2;
+                        input.className = "w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:bg-white transition-colors shadow-inner resize-y";
+                    } else {
+                        input = document.createElement('input');
+                        input.type = "text";
+                        input.className = "w-full rounded-lg border-slate-300 bg-slate-50 border px-3 py-2 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:bg-white transition-colors shadow-inner";
+                    }
+                    
+                    input.placeholder = `Ketik di sini...`;
+                    input.addEventListener('input', (e) => {
+                        APP_STATE.inputValues[varName] = e.target.value;
+                        updatePromptPreview();
+                    });
+
+                    div.appendChild(label);
+                    div.appendChild(input);
+                    formContainer.appendChild(div);
+                });
+            } else {
+                inputPanel.classList.add('hidden');
+            }
+
+            // Layout Adjustment if no form
+            const promptContentWrapper = document.getElementById('promptContentWrapper');
+            if(inputPanel.classList.contains('hidden')) {
+                promptContentWrapper.classList.remove('lg:flex-row');
+                promptContentWrapper.classList.add('lg:flex-col'); 
+            } else {
+                promptContentWrapper.classList.add('lg:flex-row');
+                promptContentWrapper.classList.remove('lg:flex-col');
+            }
+
+            updatePromptPreview();
+        };
+
+        const updatePromptPreview = () => {
+            if (!APP_STATE.currentItem || APP_STATE.currentItem.type !== 'prompt') return;
+            
+            const raw = APP_STATE.currentItem.rawPrompt;
+            const container = document.getElementById('previewContent');
+            
+            const escapeHTML = (str) => str.replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+            }[tag] || tag));
+
+            let finalHtml = '';
+            let lastIndex = 0;
+            const regex = /\[(.*?)\]/g;
+            let match;
+            
+            while ((match = regex.exec(raw)) !== null) {
+                finalHtml += escapeHTML(raw.substring(lastIndex, match.index));
+                
+                const varName = match[1];
+                const userVal = APP_STATE.inputValues[varName];
+                
+                if (userVal && userVal.trim() !== '') {
+                    finalHtml += `<span class="highlight-filled">${escapeHTML(userVal)}</span>`;
+                } else {
+                    finalHtml += `<span class="highlight-empty">[${escapeHTML(varName)}]</span>`;
+                }
+                lastIndex = regex.lastIndex;
+            }
+            finalHtml += escapeHTML(raw.substring(lastIndex));
+            container.innerHTML = finalHtml;
+        };
+
+        const fallbackCopyTextToClipboard = (text) => {
+            var textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try { document.execCommand('copy'); showToast(); } catch (err) {}
+            document.body.removeChild(textArea);
+        };
+
+        const showToast = () => {
+            const btnTops = [document.getElementById('btnCopyTop'), document.getElementById('btnCopyBottom')];
+            btnTops.forEach(btn => {
+                if(!btn) return;
+                const originalHtml = btn.innerHTML;
+                const originalBg = btn.className;
+                
+                btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg><span>Tersalin!</span>`;
+                btn.className = btn.className.replace('bg-slate-800', 'bg-emerald-500').replace('hover:bg-black', 'hover:bg-emerald-600').replace('bg-indigo-600', 'bg-emerald-500').replace('hover:bg-indigo-700', 'hover:bg-emerald-600');
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.className = originalBg;
+                }, 2000);
+            });
+
+            const toast = document.getElementById('toast');
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
+        };
+
+        // Initialize Application
+        document.addEventListener('DOMContentLoaded', initApp);
+
+    </script>
 </body>
 </html>
