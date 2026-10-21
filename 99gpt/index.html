@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>99 Prompt ChatGPT Bahasa Indonesia (Gratis) | @nasdigital</title>
+<meta name="description" content="Daftar lengkap 99 prompt ChatGPT dalam bahasa Indonesia. Gratis. Salin, tempel, dan pakai untuk nulis konten, jualan, riset, dan ambil keputusan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#000; --panel:#161616; --line:#2a2a2a;
+  --yellow:#ffcc00; --white:#f5f5f5; --grey:#a3a3a3;
+  --display:'Anton',Impact,'Arial Narrow',sans-serif;
+  --body:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:84px}
+a{color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+.bar{background:var(--yellow);color:#000;text-align:center;font-weight:700;font-size:14px;padding:9px 16px}
+
+/* HERO */
+.hero{padding:40px 0 56px;display:grid;gap:30px;grid-template-areas:"copy" "form" "cmds"}
+.copy{grid-area:copy}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(2.5rem,9vw,4.6rem);line-height:1.04;letter-spacing:.2px;text-transform:uppercase}
+.sub{margin-top:18px;color:var(--grey);font-size:1.08rem;max-width:34em}
+.sub b{color:var(--white);font-weight:700}
+.cmds{grid-area:cmds;display:flex;flex-direction:column;font-family:var(--display);font-size:clamp(2.4rem,8vw,3.8rem);line-height:1.05;color:transparent;-webkit-text-stroke:1.5px var(--yellow);user-select:none}
+
+/* FORM */
+.form{grid-area:form;background:var(--yellow);color:#000;border-radius:6px;padding:28px 24px 24px}
+.form h2{font-family:var(--display);font-weight:400;font-size:1.9rem;line-height:1.1;text-transform:uppercase}
+.form .lead{margin:6px 0 18px;font-size:.97rem;font-weight:500}
+.field{margin-bottom:14px}
+label{display:block;font-weight:800;font-size:.92rem;margin-bottom:5px}
+input{width:100%;padding:14px 14px;font:inherit;font-size:1rem;background:#fff;color:#000;border:2px solid #000;border-radius:4px}
+input::placeholder{color:#777}
+input:focus{outline:3px solid #000;outline-offset:2px}
+.btn{width:100%;margin-top:6px;padding:17px 18px;font:inherit;font-weight:800;font-size:1.08rem;background:#000;color:var(--yellow);border:0;border-radius:4px;cursor:pointer;transition:transform .15s,background .15s}
+.btn:hover{background:#1c1c1c;transform:translateY(-1px)}
+.btn:focus-visible{outline:3px solid #000;outline-offset:3px}
+.btn[disabled]{opacity:.7;cursor:wait}
+.fine{margin-top:12px;font-size:.82rem;font-weight:500;line-height:1.45}
+
+/* SECTIONS */
+section{padding:56px 0;border-top:1px solid var(--line)}
+h2.t{font-family:var(--display);font-weight:400;font-size:clamp(1.9rem,6vw,2.8rem);line-height:1.1;text-transform:uppercase;margin-bottom:26px}
+.gain{display:grid;gap:22px}
+.gain div{border-left:4px solid var(--yellow);padding-left:16px}
+.gain strong{display:block;font-size:1.08rem}
+.gain span{color:var(--grey);font-size:.98rem}
+
+.list{display:grid;gap:18px 40px}
+.list dt{font-weight:800}
+.list dd{color:var(--grey);font-size:.97rem}
+code{font-family:var(--body);font-weight:700;color:var(--yellow)}
+
+.ex{display:grid;gap:26px}
+.ex p.cmd{background:var(--panel);border-left:4px solid var(--yellow);padding:14px 16px;font-weight:500}
+.ex p.res{margin-top:10px;color:var(--grey);font-size:.98rem}
+
+.who{font-size:1.15rem;max-width:36em}
+.final{text-align:center}
+.final h2.t{margin-bottom:12px}
+.final p{color:var(--grey);margin-bottom:24px}
+.btn-link{display:inline-block;background:var(--yellow);color:#000;font-weight:800;font-size:1.1rem;padding:17px 30px;border-radius:4px;text-decoration:none;transition:transform .15s}
+.btn-link:hover{transform:translateY(-1px)}
+.btn-link:focus-visible{outline:3px solid #fff;outline-offset:3px}
+footer{padding:30px 0 10px;text-align:center;color:var(--grey);font-size:.86rem;border-top:1px solid var(--line)}
+footer b{color:var(--yellow)}
+
+/* STICKY MOBILE BAR */
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:20;background:#000;border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));transition:transform .2s}
+.sticky a{display:block;text-align:center;background:var(--yellow);color:#000;font-weight:800;padding:14px;border-radius:4px;text-decoration:none}
+.sticky.hide{transform:translateY(110%)}
+
+@media(min-width:760px){
+  .gain{grid-template-columns:repeat(2,1fr)}
+  .list{grid-template-columns:repeat(2,1fr)}
+  .ex{grid-template-columns:repeat(3,1fr)}
+}
+@media(min-width:900px){
+  body{padding-bottom:0}
+  .sticky{display:none}
+  .hero{grid-template-columns:1.1fr .9fr;grid-template-areas:"copy form" "cmds form";column-gap:56px;padding:64px 0 76px;align-items:start}
+  .form{padding:34px 30px 28px;position:sticky;top:24px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="bar">Gratis, daftar lengkap 99 prompt ChatGPT dalam bahasa Indonesia</div>
+
+<main class="wrap">
+  <div class="hero">
+    <div class="copy">
+      <h1>Tambahkan satu kata di awal prompt. Hasil ChatGPT langsung naik level.</h1>
+      <p class="sub">Dapatkan <b>daftar lengkap 99 prompt</b> yang bisa langsung kamu salin dan pakai untuk menulis konten, bikin copy jualan, riset pasar, sampai ambil keputusan. Semuanya dalam bahasa Indonesia.</p>
+    </div>
+
+    <div class="form" id="daftar">
+      <h2>Kirim daftarnya ke saya</h2>
+      <p class="lead">Isi data di bawah, daftar 99 prompt langsung dikirim.</p>
+      <form method="post" action="https://be.mailketing.co.id/webform.php?id=13684" id="webform">
+        <div class="field">
+          <label for="first_name">Nama</label>
+          <input type="text" id="first_name" name="first_name" placeholder="Nama panggilan kamu" autocomplete="given-name" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="nama@email.com" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="mobile">Nomor WhatsApp</label>
+          <input type="tel" id="mobile" name="mobile" placeholder="08123456789" autocomplete="tel" inputmode="tel" required>
+        </div>
+        <button type="submit" class="btn" id="submitBtn">Kirim 99 prompt gratis ke saya</button>
+        <p class="fine">Gratis. Daftar dikirim ke email kamu, dan nomor WhatsApp dipakai untuk tips lanjutan. Tanpa spam, kamu bisa berhenti kapan saja.</p>
+      </form>
+    </div>
+
+    <div class="cmds" aria-hidden="true"><span>/human</span><span>/copywriter</span><span>/hook</span><span>/critic</span></div>
+  </div>
+
+  <section>
+    <h2 class="t">Yang kamu dapat dari daftar ini</h2>
+    <div class="gain">
+      <div><strong>Nulis konten dan copy jualan lebih cepat</strong><span>Tidak perlu lagi menatap layar kosong. Satu kata perintah, ChatGPT langsung menulis dengan gaya yang kamu mau.</span></div>
+      <div><strong>Riset audiens dan kompetitor dalam menit</strong><span>Pahami siapa yang kamu tuju dan apa yang dilakukan pesaingmu tanpa riset berjam-jam.</span></div>
+      <div><strong>Keputusan dan rencana yang lebih jernih</strong><span>Timbang pilihan, cari risiko, dan ubah tujuan jadi langkah yang bisa dijalankan.</span></div>
+      <div><strong>Salin, tempel, langsung pakai</strong><span>Setiap prompt singkat dan sudah dijelaskan fungsinya, jadi pemula pun bisa langsung mencoba.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="t">Isi daftarnya</h2>
+    <dl class="list">
+      <div><dt>Menulis seperti manusia</dt><dd><code>/human</code> <code>/copywriter</code> <code>/rewrite</code> <code>/concise</code></dd></div>
+      <div><dt>Konten media sosial</dt><dd><code>/hook</code> <code>/caption</code> <code>/reels</code> <code>/script</code></dd></div>
+      <div><dt>Jualan dan bisnis</dt><dd><code>/offer</code> <code>/sales</code> <code>/pricing</code> <code>/funnel</code></dd></div>
+      <div><dt>Riset pasar</dt><dd><code>/audience</code> <code>/competitor</code> <code>/market</code> <code>/customer</code></dd></div>
+      <div><dt>Berpikir lebih tajam</dt><dd><code>/critic</code> <code>/assumptions</code> <code>/risks</code> <code>/factcheck</code></dd></div>
+      <div><dt>Lebih produktif</dt><dd><code>/planner</code> <code>/prioritize</code> <code>/focus</code> <code>/automate</code></dd></div>
+      <div><dt>Belajar jadi mudah</dt><dd><code>/eli5</code> <code>/teacher</code> <code>/stepbystep</code> <code>/quiz</code></dd></div>
+      <div><dt>Keputusan dan solusi</dt><dd><code>/decision</code> <code>/proscons</code> <code>/rootcause</code> <code>/solution</code></dd></div>
+    </dl>
+  </section>
+
+  <section>
+    <h2 class="t">Begini cara pakainya</h2>
+    <div class="ex">
+      <div>
+        <p class="cmd"><code>/hook</code> Buat 5 kalimat pembuka video tentang tips merawat kulit berminyak.</p>
+        <p class="res">Dapat pembuka yang bikin orang berhenti scroll, bukan sapaan yang membosankan.</p>
+      </div>
+      <div>
+        <p class="cmd"><code>/critic</code> Ini rencana peluncuran produk saya: …</p>
+        <p class="res">ChatGPT menunjukkan kelemahan rencanamu sebelum orang lain yang menemukannya.</p>
+      </div>
+      <div>
+        <p class="cmd"><code>/rootcause</code> Penjualan toko online saya turun 3 bulan terakhir.</p>
+        <p class="res">Fokus ke akar masalah, bukan sekadar gejalanya.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="t">Cocok untuk siapa?</h2>
+    <p class="who">Kreator konten, pemilik bisnis, marketer, freelancer, karyawan, dan siapa pun yang sudah pakai ChatGPT tapi merasa hasilnya masih biasa saja.</p>
+  </section>
+
+  <section class="final">
+    <h2 class="t">Ambil daftarnya sekarang</h2>
+    <p>Gratis dan langsung dikirim setelah kamu mengisi data.</p>
+    <a class="btn-link" href="#daftar" id="finalCta">Kirim 99 prompt gratis ke saya</a>
+  </section>
+
+  <footer>Dibuat oleh <b>@nasdigital</b></footer>
+</main>
+
+<div class="sticky" id="sticky"><a href="#daftar">Dapatkan 99 prompt gratis</a></div>
+
+<script>
+(function(){
+  var form=document.getElementById('webform'),btn=document.getElementById('submitBtn'),
+      mobile=document.getElementById('mobile'),sticky=document.getElementById('sticky'),
+      box=document.getElementById('daftar');
+  // Rapikan nomor WhatsApp jadi format 62xxxxxxxxxx sebelum dikirim
+  form.addEventListener('submit',function(){
+    var n=mobile.value.replace(/[^\d]/g,'');
+    if(n.indexOf('0')===0) n='62'+n.slice(1);
+    else if(n.indexOf('8')===0) n='62'+n;
+    mobile.value=n;
+    btn.disabled=true; btn.textContent='Mengirim...';
+  });
+  // Fokus ke kolom nama saat tombol CTA ditekan
+  document.getElementById('finalCta').addEventListener('click',function(){
+    setTimeout(function(){document.getElementById('first_name').focus({preventScroll:true});},400);
+  });
+  // Sembunyikan bar bawah saat form sudah terlihat
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(e){sticky.classList.toggle('hide',e[0].isIntersecting);},{threshold:.25}).observe(box);
+  }
+})();
+</script>
+</body>
+</html>
